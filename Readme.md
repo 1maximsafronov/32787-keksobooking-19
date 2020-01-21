@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Максим Сафронов](https://up.htmlacademy.ru/javascript/19/user/32787).
-* Наставник: `Неизвестно`.
+* Наставник: [Максим Грязнов](https://up.htmlacademy.ru/javascript/19/user/19845)
 
 ---
 
