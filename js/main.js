@@ -68,8 +68,8 @@ var generatePins = function (count) {
 // Функция создания DOM-элемента на основе объекта
 var renderPinElement = function (pin) {
   var pinElement = pinTemplate.cloneNode(true);
- // координаты (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом. НО РАБОТАЕТ СТРАННО
-  pinElement.style = 'left: ' + (pin.location.x - 25)  + 'px; top: ' + (pin.location.y - 70) + 'px;';
+  // координаты (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом. НО РАБОТАЕТ СТРАННО
+  pinElement.style = 'left: ' + (pin.location.x - 25) + 'px; top: ' + (pin.location.y - 70) + 'px;';
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
 
