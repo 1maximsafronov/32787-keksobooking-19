@@ -18,50 +18,86 @@ var mapPins = document.querySelector('.map__pins');
 
 document.querySelector('.map').classList.remove('map--faded');
 
+var getLocationX = function () {
+  // от ширины контенера .map__pins
+  return Math.floor(Math.random() * mapPins.offsetWidth);
+};
+
+var getLocationY = function () {
+  // от 130 до 630
+  return Math.floor(Math.random() * 500) + 130;
+};
+
+var getOfferType = function () {
+  var offerTypeArr = ['palace', 'flat', 'house', 'bungalo'];
+
+  return offerTypeArr[Math.floor(Math.random() * 4)];
+};
+
+var getOfferTime = function () {
+  return (Math.floor(Math.random() * 2) * 12) + ':00';
+};
+
+var getOfferFeatures = function () {
+  var offerFeaturesArr = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+  var offerFeatures = [];
+  for (var i = 0; i < Math.floor(Math.random() * offerFeaturesArr.length); i++) {
+    offerFeatures[i] = offerFeaturesArr[i];
+  }
+
+  return offerFeatures;
+};
+
+var getOfferPhotos = function () {
+  var offerPhotosArr = [
+    'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+    'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
+    'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
+  ];
+  var offerPhotos = [];
+  for (var i = 0; i < Math.floor(Math.random() * offerPhotosArr.length); i++) {
+    offerPhotos[i] = offerPhotosArr[i];
+  }
+
+  return offerPhotos;
+};
+
 // Функция генерации массива
 var generatePins = function (count) {
   var pinsArr = [];
-  var offerTypeArr = ['palace', 'flat', 'house', 'bungalo'];
+  var locationX;
+  var locationY;
+  var pinObj = {};
   for (var i = 0; i < count; i++) {
-    // от ширины контенера .map__pins
-    var locationX = Math.floor(Math.random() * mapPins.offsetWidth);
-    // от 130 до 630
-    var locationY = Math.floor(Math.random() * 500) + 130;
-    var offerType = offerTypeArr[Math.floor(Math.random() * 4)];
+    locationX = getLocationX();
+    locationY = getLocationY();
     // Структура объекта
-    var pinObj = {
+    pinObj = {
       'author': {
         'avatar': 'img/avatars/user0' + (1 + i) + '.png'
       },
       'offer': {
-        'title': 'заголовок предложения', // (пока оставил увсех одинаково)
+        'title': 'заголовок предложения', // (оставил увсех одинаково)
         'address': locationX + ', ' + locationY + '',
-        'price': 12345, // стоимость проживания (пока оставил увсех одинаково)
-        'type': offerType,
-        'rooms': 2, // количество комнат. (пока оставил увсех одинаково)
-        'guests': 5, // Количество гостей (пока оставил увсех одинаково)
-        'checkin': '12:00', // (пока оставил увсех одинаково)
-        'checkout': '14:00', // (пока оставил увсех одинаково)
-        'features': [ // (пока оставил увсех одинаково)
-          'wifi',
-          'dishwasher',
-          'parking',
-          'washer',
-          'elevator',
-          'conditioner'
-        ],
-        'description': 'Строка с описанием', // (пока оставил увсех одинаково)
-        'photos': ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
+        'price': 12345, // стоимость проживания (оставил увсех одинаково)
+        'type': getOfferType(),
+        'rooms': 2, // количество комнат. (оставил увсех одинаково)
+        'guests': 5, // Количество гостей (оставил увсех одинаково)
+        'checkin': getOfferTime(), // Время заезда
+        'checkout': getOfferTime(), // Время выезда
+        'features': getOfferFeatures(),
+        'description': 'Строка с описанием', // (оставил увсех одинаково)
+        'photos': getOfferPhotos()
       },
       'location': {
         'x': locationX,
         'y': locationY
       }
     };
-
     pinsArr[i] = pinObj;
     pinObj = null;
   }
+
   return pinsArr;
 };
 
@@ -88,5 +124,6 @@ var setPinElements = function (arr) {
 
 // Вызов генерации массиваобъекта с данными
 var pins = generatePins(8);
+
 // Отрисовка обектов в контенер на страницу
 mapPins.appendChild(setPinElements(pins));
