@@ -61,7 +61,7 @@ var getOfferTime = function () {
 var getOfferFeatures = function () {
   var offerFeaturesArr = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var offerFeatures = [];
-  for (var i = 0; i <= Math.floor(Math.random() * offerFeaturesArr.length); i++) {
+  for (var i = 0; i < Math.floor(Math.random() * (offerFeaturesArr.length + 1)); i++) {
     offerFeatures[i] = offerFeaturesArr[i];
   }
 
@@ -76,7 +76,7 @@ var getOfferPhotos = function () {
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
   ];
   var offerPhotos = [];
-  for (var i = 0; i <= Math.floor(Math.random() * offerPhotosArr.length); i++) {
+  for (var i = 0; i < Math.floor(Math.random() * (offerPhotosArr.length + 1)); i++) {
     offerPhotos[i] = offerPhotosArr[i];
   }
 
@@ -161,19 +161,20 @@ var translateOfferType = function (type) {
   return cardOfferType;
 };
 
-var getCardFeatures = function (cardElement, card) {
-  var cardElementFeatures = cardElement.querySelectorAll('.popup__features .popup__feature');
+// Получаем список особенностей
+var getCardFeatures = function (cardFeatures, cardOfferFeatures) {
+  var cardElementFeatures = cardFeatures.querySelectorAll('.popup__feature');
   for (var i = 0; i < cardElementFeatures.length; i++) {
     cardElementFeatures[i].style.display = 'none';
   }
 
-  for (var j = 0; j < card.offer.features.length; j++) {
-    cardElement.querySelector('.popup__features .popup__feature--' + card.offer.features[j]).style.display = 'inline-block';
+  for (var j = 0; j < cardOfferFeatures.length; j++) {
+    cardFeatures.querySelector('.popup__feature--' + cardOfferFeatures[j]).style.display = 'inline-block';
   }
 };
 
 
-//
+// Получаем набор фотографий объявления
 var getCardPhotos = function (cardOfferPhotos) {
   var photosFragment = document.createDocumentFragment();
   for (var i = 0; i < cardOfferPhotos.length; i++) {
@@ -229,7 +230,7 @@ var renderCardElement = function (card) {
   }
   // Наличие дополнительных особенностей
   if (card.offer.features.length) {
-    getCardFeatures(cardElement, card);
+    getCardFeatures(cardElement.querySelector('.popup__features'), card.offer.features);
   } else {
     cardElement.querySelector('.popup__features').style.display = 'none';
   }
