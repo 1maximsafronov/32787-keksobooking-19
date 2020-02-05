@@ -133,7 +133,7 @@ var renderPinElement = function (pin) {
   return pinElement;
 };
 
-// Функция заполнения блока элементами
+// Группировка и вывод отрисованных маркеров на карте
 var setAdvertElements = function (arr) {
   var fragment = document.createDocumentFragment();
   for (var j = 0; j < arr.length; j++) {
@@ -174,13 +174,12 @@ var getCardFeatures = function (cardFeatures, cardOfferFeatures) {
 
 // Получаем набор фотографий объявления
 var getCardPhotos = function (cardOfferPhotos) {
+  var photoTemplate = cardTemplate.querySelector('.popup__photos .popup__photo');
+  var photoElement;
   var photosFragment = document.createDocumentFragment();
   cardOfferPhotos.forEach(function (item) {
-    var photoElement = document.createElement('img');
+    photoElement = photoTemplate.cloneNode(true);
     photoElement.src = item;
-    photoElement.width = 45;
-    photoElement.height = 40;
-    photoElement.classList.add('popup__photo');
     photosFragment.appendChild(photoElement);
   });
 
@@ -190,16 +189,16 @@ var getCardPhotos = function (cardOfferPhotos) {
 // Функция создания DOM-элемента на основе объекта
 var renderCardElement = function (card) {
   var cardElement = cardTemplate.cloneNode(true);
-  var cardElementTitle = cardElement.querySelector('.popup__title');
-  var cardElementAddress = cardElement.querySelector('.popup__text--address');
-  var cardElementPrice = cardElement.querySelector('.popup__text--price');
   var cardElemetnType = cardElement.querySelector('.popup__type');
-  var cardElementCapacity = cardElement.querySelector('.popup__text--capacity');
   var cardElementTime = cardElement.querySelector('.popup__text--time');
-  var cardElementFeatures = cardElement.querySelector('.popup__features');
-  var cardElementDescription = cardElement.querySelector('.popup__description');
+  var cardElementTitle = cardElement.querySelector('.popup__title');
+  var cardElementPrice = cardElement.querySelector('.popup__text--price');
   var cardElementPhotos = cardElement.querySelector('.popup__photos');
   var cardElementAvatar = cardElement.querySelector('.popup__avatar');
+  var cardElementAddress = cardElement.querySelector('.popup__text--address');
+  var cardElementCapacity = cardElement.querySelector('.popup__text--capacity');
+  var cardElementFeatures = cardElement.querySelector('.popup__features');
+  var cardElementDescription = cardElement.querySelector('.popup__description');
 
   // Заголовок
   if (card.offer.title) {
