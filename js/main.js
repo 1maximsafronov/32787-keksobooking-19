@@ -144,24 +144,17 @@ var setAdvertElements = function (arr) {
 
 
 var translateOfferType = function (type) {
-  var cardOfferType = '';
-  if (type === 'flat') {
-    cardOfferType = 'Квартира';
-  }
-  if (type === 'bungalo') {
-    cardOfferType = 'Бунгало';
-  }
-  if (type === 'house') {
-    cardOfferType = 'Дом';
-  }
-  if (type === 'palace') {
-    cardOfferType = 'Дворец';
-  }
-  return cardOfferType;
+  var cardOfferType = {
+    'house': 'Дом',
+    'flat': 'Квартира',
+    'palace': 'Дворец',
+    'bungalo': 'Бунгало'
+  };
+  return cardOfferType[type];
 };
 
 // Получаем список особенностей
-var getCardFeatures = function (cardFeatures, cardOfferFeatures) {
+var changeCardFeatures = function (cardFeatures, cardOfferFeatures) {
   var cardElementFeatures = cardFeatures.querySelectorAll('.popup__feature');
   cardElementFeatures.forEach(function (item) {
     item.style.display = 'none';
@@ -177,9 +170,9 @@ var getCardPhotos = function (cardOfferPhotos) {
   var photoTemplate = cardTemplate.querySelector('.popup__photos .popup__photo');
   var photoElement;
   var photosFragment = document.createDocumentFragment();
-  cardOfferPhotos.forEach(function (item) {
+  cardOfferPhotos.forEach(function (photo) {
     photoElement = photoTemplate.cloneNode(true);
-    photoElement.src = item;
+    photoElement.src = photo;
     photosFragment.appendChild(photoElement);
   });
 
@@ -238,14 +231,13 @@ var renderCardElement = function (card) {
   }
   // Наличие дополнительных особенностей
   if (card.offer.features.length) {
-    getCardFeatures(cardElementFeatures, card.offer.features);
+    changeCardFeatures(cardElementFeatures, card.offer.features);
   } else {
     cardElementFeatures.style.display = 'none';
   }
   // Описание объявления
   if (card.offer.description) {
     cardElementDescription.textContent = card.offer.description;
-
   } else {
     cardElementDescription.style.display = 'none';
   }
@@ -264,7 +256,6 @@ var renderCardElement = function (card) {
   } else {
     cardElementAvatar.style.display = 'none';
   }
-
   return cardElement;
 };
 
