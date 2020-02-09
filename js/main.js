@@ -1,25 +1,4 @@
 'use strict';
-/*
-[+] Выведите заголовок объявления offer.title в заголовок .popup__title.
-
-[+] Выведите адрес offer.address в блок .popup__text--address.
-
-[+] Выведите цену offer.price в блок .popup__text--price строкой вида {{offer.price}}₽/ночь. Например, 5200₽/ночь.
-
-[+] В блок .popup__type выведите тип жилья offer.type: Квартира для flat, Бунгало для bungalo, Дом для house, Дворец для palace.
-
-[+] Выведите количество гостей и комнат offer.rooms и offer.guests в блок .popup__text--capacity строкой вида {{offer.rooms}} комнаты для {{offer.guests}} гостей. Например, 2 комнаты для 3 гостей.
-
-[+] Время заезда и выезда offer.checkin и offer.checkout в блок .popup__text--time строкой вида Заезд после {{offer.checkin}}, выезд до {{offer.checkout}}. Например, заезд после 14:00, выезд до 12:00.
-
-[ ] В список .popup__features выведите все доступные удобства в объявлении.
-
-[+] В блок .popup__description выведите описание объекта недвижимости offer.description.
-
-[ ] В блок .popup__photos выведите все фотографии из списка offer.photos. Каждая из строк массива photos должна записываться как src соответствующего изображения.
-
-[+] Замените src у аватарки пользователя — изображения, которое записано в .popup__avatar — на значения поля author.avatar отрисовываемого объекта.
-*/
 
 // Шаблон для маркеров
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -34,31 +13,31 @@ var mapContainer = document.querySelector('.map');
 document.querySelector('.map').classList.remove('map--faded');
 
 // Генерация положения маркера по горизонтали
-var getLocationX = function () {
+function getLocationX() {
   // от ширины контенера .map__pins
   return Math.floor(Math.random() * mapPins.offsetWidth);
-};
+}
 
 // Генерация положения маркера по вертикали
-var getLocationY = function () {
+function getLocationY() {
   // от 130 до 630
   return Math.floor(Math.random() * 500) + 130;
-};
+}
 
 // Генерация типа жилплощади
-var getOfferType = function () {
+function getOfferType() {
   var offerTypeArr = ['palace', 'flat', 'house', 'bungalo'];
 
   return offerTypeArr[Math.floor(Math.random() * 4)];
-};
+}
 
 // Генерация времени въезда/выезда
-var getOfferTime = function () {
+function getOfferTime() {
   return (Math.floor(Math.random() * 3) + 12) + ':00';
-};
+}
 
 // Генерация имеющихся в квартире дополнительные особенности
-var getOfferFeatures = function () {
+function getOfferFeatures() {
   var offerFeaturesArr = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var offerFeatures = [];
   for (var i = 0; i < Math.floor(Math.random() * (offerFeaturesArr.length + 1)); i++) {
@@ -66,10 +45,10 @@ var getOfferFeatures = function () {
   }
 
   return offerFeatures;
-};
+}
 
 // Генерация массива с фотографиями объявления
-var getOfferPhotos = function () {
+function getOfferPhotos() {
   var offerPhotosArr = [
     'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
     'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
@@ -81,10 +60,10 @@ var getOfferPhotos = function () {
   }
 
   return offerPhotos;
-};
+}
 
 // Функция генерации массива
-var generateAdverts = function (count) {
+function generateAdverts(count) {
   var advertsArr = [];
   var locationX;
   var locationY;
@@ -120,10 +99,10 @@ var generateAdverts = function (count) {
   }
 
   return advertsArr;
-};
+}
 
 // Функция создания маркера, DOM-элемента на основе объекта
-var renderPinElement = function (pin) {
+function renderPinElement(pin) {
   var pinElement = pinTemplate.cloneNode(true);
   // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом. НО РАБОТАЕТ СТРАННО
   pinElement.style = 'left: ' + (pin.location.x - 25) + 'px; top: ' + (pin.location.y - 70) + 'px;';
@@ -131,19 +110,18 @@ var renderPinElement = function (pin) {
   pinElement.querySelector('img').alt = pin.offer.title;
 
   return pinElement;
-};
+}
 
 // Группировка и вывод отрисованных маркеров на карте
-var setAdvertElements = function (arr) {
+function setAdvertElements(arr) {
   var fragment = document.createDocumentFragment();
   for (var j = 0; j < arr.length; j++) {
     fragment.appendChild(renderPinElement(arr[j]));
   }
   return fragment;
-};
+}
 
-
-var translateOfferType = function (type) {
+function translateOfferType(type) {
   var cardOfferType = {
     'house': 'Дом',
     'flat': 'Квартира',
@@ -151,10 +129,10 @@ var translateOfferType = function (type) {
     'bungalo': 'Бунгало'
   };
   return cardOfferType[type];
-};
+}
 
 // Получаем список особенностей
-var changeCardFeatures = function (cardFeatures, cardOfferFeatures) {
+function changeCardFeatures(cardFeatures, cardOfferFeatures) {
   var cardElementFeatures = cardFeatures.querySelectorAll('.popup__feature');
   cardElementFeatures.forEach(function (item) {
     item.style.display = 'none';
@@ -162,11 +140,11 @@ var changeCardFeatures = function (cardFeatures, cardOfferFeatures) {
   cardOfferFeatures.forEach(function (item) {
     cardFeatures.querySelector('.popup__feature--' + item).style.display = 'inline-block';
   });
-};
+}
 
 
 // Получаем набор фотографий объявления
-var getCardPhotos = function (cardOfferPhotos) {
+function getCardPhotos(cardOfferPhotos) {
   var photoTemplate = cardTemplate.querySelector('.popup__photos .popup__photo');
   var photoElement;
   var photosFragment = document.createDocumentFragment();
@@ -177,10 +155,10 @@ var getCardPhotos = function (cardOfferPhotos) {
   });
 
   return photosFragment;
-};
+}
 
 // Функция создания DOM-элемента на основе объекта
-var renderCardElement = function (card) {
+function renderCardElement(card) {
   var cardElement = cardTemplate.cloneNode(true);
   var cardElemetnType = cardElement.querySelector('.popup__type');
   var cardElementTime = cardElement.querySelector('.popup__text--time');
@@ -257,7 +235,7 @@ var renderCardElement = function (card) {
     cardElementAvatar.style.display = 'none';
   }
   return cardElement;
-};
+}
 
 // Вызов генерации массива объявлений с данными
 var adverts = generateAdverts(8);
