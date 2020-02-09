@@ -8,6 +8,9 @@
 
 */
 
+var MAP_PIN_WIDTH = 50;
+var MAP_PIN_HEIGHT = 70;
+
 // Шаблон для маркеров
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 // карта маркеров
@@ -115,7 +118,7 @@ function generateAdverts(count) {
 function renderPinElement(pin) {
   var pinElement = pinTemplate.cloneNode(true);
   // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом. НО РАБОТАЕТ СТРАННО
-  pinElement.style = 'left: ' + (pin.location.x - 25) + 'px; top: ' + (pin.location.y - 70) + 'px;';
+  pinElement.style = 'left: ' + (pin.location.x - MAP_PIN_WIDTH / 2) + 'px; top: ' + (pin.location.y - MAP_PIN_HEIGHT) + 'px;';
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
 
@@ -320,3 +323,14 @@ function onPinMainFirstClick(evt) {
 
 mapPinMain.addEventListener('mousedown', onPinMainFirstClick);
 mapPinMain.addEventListener('keydown', onPinMainFirstClick);
+
+//
+// var advertAddressInput = adForm.querySelector('input[id="address"]');
+//
+//
+// function getPinCoords(pin) {
+//   return {
+//     positionX: pin.left + pin.offsetWidth / 2,
+//     positionY: pin.top
+//   }
+// }
