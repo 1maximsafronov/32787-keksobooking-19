@@ -1,16 +1,26 @@
 'use strict';
 
+/*
+
+  [+] Активация страницы
+  [ ] Заполнение поле адреса
+  [ ] Непростая валидация
+
+*/
+
 // Шаблон для маркеров
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 // карта маркеров
 var mapPins = document.querySelector('.map__pins');
 
-// Шаблон для карточек объявлений
-var cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-// Контейнер куда встявлять карточки
-var mapContainer = document.querySelector('.map');
+// Вызов генерации массива объявлений с данными
+var adverts = generateAdverts(8);
 
-document.querySelector('.map').classList.remove('map--faded');
+// // Шаблон для карточек объявлений
+// var cardTemplate = document.querySelector('#card').content.querySelector('.popup');
+// // Контейнер куда встявлять карточки
+// var mapContainer = document.querySelector('.map');
+
 
 // Генерация положения маркера по горизонтали
 function getLocationX() {
@@ -121,6 +131,7 @@ function setAdvertElements(arr) {
   return fragment;
 }
 
+/*
 function translateOfferType(type) {
   var cardOfferType = {
     'house': 'Дом',
@@ -156,6 +167,7 @@ function getCardPhotos(cardOfferPhotos) {
 
   return photosFragment;
 }
+
 
 // Функция создания DOM-элемента на основе объекта
 function renderCardElement(card) {
@@ -236,12 +248,75 @@ function renderCardElement(card) {
   }
   return cardElement;
 }
-
-// Вызов генерации массива объявлений с данными
-var adverts = generateAdverts(8);
+*/
 
 // Отрисовка маркеров в контенер на на карту страницы
-mapPins.appendChild(setAdvertElements(adverts));
 
 // Отрисовка карточки объявления пере .map__filters-container
-mapContainer.insertBefore(renderCardElement(adverts[0]), mapContainer.querySelector('.map__filters-container'));
+// mapContainer.insertBefore(renderCardElement(adverts[0]), mapContainer.querySelector('.map__filters-container'));
+
+var adForm = document.querySelector('.ad-form--disabled');
+var mapFilters = document.querySelector('.map__filters');
+var mapPinMain = document.querySelector('.map__pin--main');
+
+disableForm(adForm);
+disableForm(mapFilters);
+
+function disableElement(elements) {
+  elements.forEach(function (element) {
+    element.disabled = true;
+  });
+}
+
+function enableElement(elements) {
+  elements.forEach(function (element) {
+    element.disabled = false;
+  });
+}
+
+// Функция отключения формы
+function disableForm(form) {
+  var selects = form.querySelectorAll('select');
+  var inputs = form.querySelectorAll('input');
+  var buttons = form.querySelectorAll('button');
+  var fieldsets = form.querySelectorAll('fieldset');
+  disableElement(selects);
+  disableElement(inputs);
+  disableElement(buttons);
+  disableElement(fieldsets);
+}
+
+// Функция включения формы
+function enableForm(form) {
+  var selects = form.querySelectorAll('select');
+  var inputs = form.querySelectorAll('input');
+  var buttons = form.querySelectorAll('button');
+  var fieldsets = form.querySelectorAll('fieldset');
+  enableElement(selects);
+  enableElement(inputs);
+  enableElement(buttons);
+  enableElement(fieldsets);
+}
+
+
+// Функция активации страницы
+function activationPage() {
+  enableForm(adForm);
+  enableForm(mapFilters);
+  mapPins.appendChild(setAdvertElements(adverts));
+  adForm.classList.remove('ad-form--disabled');
+  document.querySelector('.map').classList.remove('map--faded');
+}
+
+// Функция обработчик нажатия на главный маркер
+function onPinMainFirstClick(evt) {
+  if (evt.button === 0 || evt.key === 'Enter') {
+    evt.preventDefault();
+    activationPage();
+    mapPinMain.removeEventListener('mousedown', onPinMainFirstClick);
+    mapPinMain.removeEventListener('keydown', onPinMainFirstClick);
+  }
+}
+
+mapPinMain.addEventListener('mousedown', onPinMainFirstClick);
+mapPinMain.addEventListener('keydown', onPinMainFirstClick);
