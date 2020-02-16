@@ -3,8 +3,8 @@
 /*
 
   [+] Активация страницы
-  [ ] Заполнение поле адреса
-  [ ] Непростая валидация
+  [+] Заполнение поле адреса
+  [+] Непростая валидация
 
 */
 
@@ -15,6 +15,22 @@ var MAP_PIN_HEIGHT = 70;
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 // карта маркеров
 var mapPins = document.querySelector('.map__pins');
+
+// Форма ввода данных объявления
+var adForm = document.querySelector('.ad-form--disabled');
+var adTitileInput = adForm.querySelector('input[id="title"]');
+var adTypeSelect = adForm.querySelector('select[id="type"]');
+var adPriceInput = adForm.querySelector('input[id="price"]');
+var adRoomNumber = adForm.querySelector('select[id="room_number"]');
+var adCapacity = adForm.querySelector('select[id="capacity"]');
+// Форма фильтра
+var mapFilters = document.querySelector('.map__filters');
+// Главный маркер на карте
+var mapPinMain = document.querySelector('.map__pin--main');
+var MAP_PIN_MAIN_WIDTH = mapPinMain.offsetWidth;
+var MAP_PIN_MAIN_HEIGHT = mapPinMain.offsetHeight;
+// Поле ввода адреса главного маркера
+var advertAddressInput = adForm.querySelector('input[id="address"]');
 
 // Вызов генерации массива объявлений с данными
 var adverts = generateAdverts(8);
@@ -134,7 +150,7 @@ function setAdvertElements(arr) {
   return fragment;
 }
 
-/*
+/* ----------------------
 function translateOfferType(type) {
   var cardOfferType = {
     'house': 'Дом',
@@ -251,17 +267,13 @@ function renderCardElement(card) {
   }
   return cardElement;
 }
-*/
 
-// Отрисовка маркеров в контенер на на карту страницы
+------------------------------------ */
 
-// Отрисовка карточки объявления пере .map__filters-container
+// Отрисовка карточки объявления перед .map__filters-container
 // mapContainer.insertBefore(renderCardElement(adverts[0]), mapContainer.querySelector('.map__filters-container'));
 
-var adForm = document.querySelector('.ad-form--disabled');
-var mapFilters = document.querySelector('.map__filters');
-var mapPinMain = document.querySelector('.map__pin--main');
-
+// Отключение форм при запуске страницы
 disableForm(adForm);
 disableForm(mapFilters);
 
@@ -306,6 +318,8 @@ function enableForm(form) {
 function activationPage() {
   enableForm(adForm);
   enableForm(mapFilters);
+  validateRoomsCapacity();
+  // Отрисовка маркеров в контенер на на карту страницы
   mapPins.appendChild(setAdvertElements(adverts));
   adForm.classList.remove('ad-form--disabled');
   document.querySelector('.map').classList.remove('map--faded');
@@ -318,19 +332,93 @@ function onPinMainFirstClick(evt) {
     activationPage();
     mapPinMain.removeEventListener('mousedown', onPinMainFirstClick);
     mapPinMain.removeEventListener('keydown', onPinMainFirstClick);
+    // Задание адреса при активации страницы
+    setAddressValue(mapPinMain.offsetLeft + Math.floor(MAP_PIN_MAIN_WIDTH / 2), mapPinMain.offsetTop + MAP_PIN_MAIN_HEIGHT + 25);
   }
 }
 
 mapPinMain.addEventListener('mousedown', onPinMainFirstClick);
 mapPinMain.addEventListener('keydown', onPinMainFirstClick);
 
-//
-// var advertAddressInput = adForm.querySelector('input[id="address"]');
-//
-//
-// function getPinCoords(pin) {
-//   return {
-//     positionX: pin.left + pin.offsetWidth / 2,
-//     positionY: pin.top
-//   }
-// }
+
+// ---- Здесь ббудет валидация формы объявления --------------------
+// Функция задания поля адреса
+function setAddressValue(x, y) {
+  advertAddressInput.value = x + ', ' + y + '';
+}
+
+// Задание адреса при мервой загрузке страницы
+setAddressValue((mapPinMain.offsetLeft + Math.floor(MAP_PIN_MAIN_WIDTH / 2)), (mapPinMain.offsetTop + Math.floor(MAP_PIN_MAIN_HEIGHT / 2)));
+
+// Обработчик невалидного поля заголовка
+adTitileInput.addEventListener('invalid', function () {
+  var errorMessage = '';
+  if (adTitileInput.validity.tooShort) {
+    errorMessage = 'Заголовок должен состоять минимум из 30-ти символов';
+  } else if (adTitileInput.validity.tooLong) {
+    errorMessage = 'Заголовок не должен привышать 100 символов';
+  } else if (adTitileInput.validity.valueMissing) {
+    errorMessage = 'Обязательное поле';
+  }
+  adTitileInput.setCustomValidity(errorMessage);
+});
+
+// Обработчик введения текста в поле заголовка
+adTitileInput.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length < 30) {
+    target.setCustomValidity('Имя должно состоять минимум из ' + 30 + '-x символов');
+  } else {
+    target.setCustomValidity('');
+  }
+});
+
+// Задание минимальной цены на аренду в зависимости от типа
+adTypeSelect.addEventListener('change', function () {
+  var placeholderPrice;
+  if (adTypeSelect.value === 'bungalo') {
+    placeholderPrice = 0;
+  }
+  if (adTypeSelect.value === 'flat') {
+    placeholderPrice = 1000;
+  }
+  if (adTypeSelect.value === 'house') {
+    placeholderPrice = 5000;
+  }
+  if (adTypeSelect.value === 'palace') {
+    placeholderPrice = 10000;
+  }
+  adPriceInput.placeholder = placeholderPrice;
+  adPriceInput.min = placeholderPrice;
+});
+
+// Функция проверки количества комнат и количества гостей
+function validateRoomsCapacity() {
+  var rooms = Number(adRoomNumber.value);
+  var capacity = Number(adCapacity.value);
+  var errorMessage = '';
+  if (rooms === 1 && capacity !== 1) {
+    errorMessage = 'В таком количестве комнат может быть от 1 гость';
+  } else if (rooms === 2 && (capacity < 1 || capacity > 2)) {
+    errorMessage = 'В таком количестве комнат может быть от 1 до 2-х гостей';
+  } else if (rooms === 3 && (capacity < 1 || capacity > 3)) {
+    errorMessage = 'В таком количестве комнат может быть от 1 до 3-х гостей';
+  } else if (rooms === 100 && capacity !== 0) {
+    errorMessage = 'Такое количество комнат не для гостей';
+  }
+  adCapacity.setCustomValidity(errorMessage);
+}
+
+// Функция при выборе количества комнат
+function onCapacityChange() {
+  validateRoomsCapacity();
+}
+
+// Функция при выборе количества гостей
+function onRoomNumberChange() {
+  validateRoomsCapacity();
+}
+
+
+adRoomNumber.addEventListener('change', onRoomNumberChange);
+adCapacity.addEventListener('change', onCapacityChange);
