@@ -43,10 +43,10 @@ var advertAddressInput = adForm.querySelector('input[id="address"]');
 // Вызов генерации массива объявлений с данными
 var adverts = generateAdverts(8);
 
-// // Шаблон для карточек объявлений
-// var cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-// // Контейнер куда встявлять карточки
-// var mapContainer = document.querySelector('.map');
+// Шаблон для карточек объявлений
+var cardTemplate = document.querySelector('#card').content.querySelector('.popup');
+// Контейнер куда встявлять карточки
+var mapContainer = document.querySelector('.map');
 
 
 // Генерация положения маркера по горизонтали
@@ -141,10 +141,73 @@ function generateAdverts(count) {
 // Функция создания маркера, DOM-элемента на основе объекта
 function renderPinElement(pin) {
   var pinElement = pinTemplate.cloneNode(true);
+  var cardPopup = renderCardElement(pin);
+  var cardClose = cardPopup.querySelector('.popup__close');
   // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом. НО РАБОТАЕТ СТРАННО
+  pinElement.tabIndex = 0;
   pinElement.style = 'left: ' + (pin.location.x - MAP_PIN_WIDTH / 2) + 'px; top: ' + (pin.location.y - MAP_PIN_HEIGHT) + 'px;';
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
+
+  // Отрисовка и добавление карточки объявления
+  mapContainer.insertBefore(cardPopup, mapContainer.querySelector('.map__filters-container'));
+
+  // Функция закрытия карточки при нажатии Esc
+  function onPopupEscPress(evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      closeCardPopup();
+    }
+  }
+
+  // Функция открытия карточки
+  function openCardPopup() {
+    // Проверка и закрытие других открытых карточек при открытии новой
+    var activePopup = document.querySelector('.map__card--active');
+    var activePin = document.querySelector('.map__pin--active');
+    if (activePopup) {
+      activePopup.classList.add('hidden');
+      activePopup.classList.remove('map__card--active');
+    }
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+    }
+
+    cardPopup.classList.remove('hidden');
+    cardPopup.classList.add('map__card--active');
+    cardClose.addEventListener('click', onCardCloseClick);
+    pinElement.classList.add('map__pin--active');
+    document.addEventListener('keydown', onPopupEscPress);
+  }
+
+  // Функция закрытия карточки
+  function closeCardPopup() {
+    cardPopup.classList.add('hidden');
+    cardPopup.classList.remove('map__card--active');
+    pinElement.classList.remove('map__pin--active');
+    cardClose.removeEventListener('click', onCardCloseClick);
+    document.removeEventListener('keydown', onPopupEscPress);
+  }
+
+  // Функция закрытия карточки при клике на крестик
+  function onCardCloseClick(evt) {
+    evt.preventDefault();
+    closeCardPopup();
+  }
+
+  // Открытие карточки по клику на метке
+  pinElement.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    openCardPopup();
+  });
+
+  // Открытие карточки по клавише Enter на метке
+  pinElement.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Enter') {
+      evt.preventDefault();
+      openCardPopup();
+    }
+  });
 
   return pinElement;
 }
@@ -158,7 +221,7 @@ function setAdvertElements(arr) {
   return fragment;
 }
 
-/* ----------------------
+
 function translateOfferType(type) {
   var cardOfferType = {
     'house': 'Дом',
@@ -273,13 +336,21 @@ function renderCardElement(card) {
   } else {
     cardElementAvatar.style.display = 'none';
   }
+  cardElement.classList.add('hidden');
   return cardElement;
 }
 
------------------------------------- */
+// Отрисовка всех карточек объявлений
+// function renderAllCards(cards) {
+//   var fragment = document.createDocumentFragment();
+//   for (var j = 0; j < cards.length; j++) {
+//     fragment.appendChild(renderCardElement(cards[j]));
+//   }
+//   return fragment;
+// }
 
 // Отрисовка карточки объявления перед .map__filters-container
-// mapContainer.insertBefore(renderCardElement(adverts[0]), mapContainer.querySelector('.map__filters-container'));
+// mapContainer.insertBefore(renderAllCards(adverts), mapContainer.querySelector('.map__filters-container'));
 
 // Отключение форм при запуске страницы
 disableForm(adForm);
@@ -424,6 +495,7 @@ function checkRooms4(rooms, capacity) {
   }
   return bool;
 }
+
 // Функция проверки количества комнат и количества гостей
 function validateRoomsCapacity() {
   var rooms = Number(adRoomNumber.value);
