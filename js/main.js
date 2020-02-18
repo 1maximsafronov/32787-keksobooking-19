@@ -375,35 +375,59 @@ adTitileInput.addEventListener('input', function (evt) {
 
 // Задание минимальной цены на аренду в зависимости от типа
 adTypeSelect.addEventListener('change', function () {
-  var placeholderPrice;
-  if (adTypeSelect.value === 'bungalo') {
-    placeholderPrice = 0;
-  }
-  if (adTypeSelect.value === 'flat') {
-    placeholderPrice = 1000;
-  }
-  if (adTypeSelect.value === 'house') {
-    placeholderPrice = 5000;
-  }
-  if (adTypeSelect.value === 'palace') {
-    placeholderPrice = 10000;
-  }
-  adPriceInput.placeholder = placeholderPrice;
-  adPriceInput.min = placeholderPrice;
+  var placeholderPrice = {
+    'bungalo': 0,
+    'flat': 1000,
+    'house': 5000,
+    'palace': 10000
+  };
+  adPriceInput.placeholder = placeholderPrice[adTypeSelect.value];
+  adPriceInput.min = placeholderPrice[adTypeSelect.value];
 });
 
+function checkRooms1(rooms, capacity) {
+  var bool = false;
+  if (rooms === 1 && capacity !== 1) {
+    bool = true;
+  }
+  return bool;
+}
+
+function checkRooms2(rooms, capacity) {
+  var bool = false;
+  if (rooms === 2 && (capacity < 1 || capacity > 2)) {
+    bool = true;
+  }
+  return bool;
+}
+
+function checkRooms3(rooms, capacity) {
+  var bool = false;
+  if (rooms === 3 && (capacity < 1 || capacity > 3)) {
+    bool = true;
+  }
+  return bool;
+}
+
+function checkRooms4(rooms, capacity) {
+  var bool = false;
+  if (rooms === 100 && capacity !== 0) {
+    bool = true;
+  }
+  return bool;
+}
 // Функция проверки количества комнат и количества гостей
 function validateRoomsCapacity() {
   var rooms = Number(adRoomNumber.value);
   var capacity = Number(adCapacity.value);
   var errorMessage = '';
-  if (rooms === 1 && capacity !== 1) {
+  if (checkRooms1(rooms, capacity)) {
     errorMessage = 'В таком количестве комнат может быть от 1 гость';
-  } else if (rooms === 2 && (capacity < 1 || capacity > 2)) {
+  } else if (checkRooms2(rooms, capacity)) {
     errorMessage = 'В таком количестве комнат может быть от 1 до 2-х гостей';
-  } else if (rooms === 3 && (capacity < 1 || capacity > 3)) {
+  } else if (checkRooms3(rooms, capacity)) {
     errorMessage = 'В таком количестве комнат может быть от 1 до 3-х гостей';
-  } else if (rooms === 100 && capacity !== 0) {
+  } else if (checkRooms4(rooms, capacity)) {
     errorMessage = 'Такое количество комнат не для гостей';
   }
   adCapacity.setCustomValidity(errorMessage);
