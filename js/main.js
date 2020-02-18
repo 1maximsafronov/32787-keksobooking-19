@@ -2,9 +2,15 @@
 
 /*
 
-  [+] Активация страницы
-  [+] Заполнение поле адреса
-  [+] Непростая валидация
+Задача
+Напишите код для валидации формы добавления нового объявления. Список полей для валидации:
+
+[+] Поле «Заголовок объявления».
+[+] Поле «Тип жилья»
+[+] Поле «Цена за ночь»
+[+] Поле «Адрес»
+[+] Поля «Время заезда», «Время выезда»
+[ ] Поля «Фотография пользователя» и «Фотография жилья»
 
 */
 
@@ -23,6 +29,8 @@ var adTypeSelect = adForm.querySelector('select[id="type"]');
 var adPriceInput = adForm.querySelector('input[id="price"]');
 var adRoomNumber = adForm.querySelector('select[id="room_number"]');
 var adCapacity = adForm.querySelector('select[id="capacity"]');
+var adTimeIn = adForm.querySelector('select[id="timein"]');
+var adTimeOut = adForm.querySelector('select[id="timeout"]');
 // Форма фильтра
 var mapFilters = document.querySelector('.map__filters');
 // Главный маркер на карте
@@ -443,6 +451,14 @@ function onRoomNumberChange() {
   validateRoomsCapacity();
 }
 
+// Валидация времени заезда и выезда
+adTimeIn.addEventListener('change', function () {
+  adTimeOut.value = adTimeIn.value;
+});
+
+adTimeOut.addEventListener('change', function () {
+  adTimeIn.value = adTimeOut.value;
+});
 
 adRoomNumber.addEventListener('change', onRoomNumberChange);
 adCapacity.addEventListener('change', onCapacityChange);
