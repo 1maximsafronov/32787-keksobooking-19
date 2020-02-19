@@ -3,13 +3,13 @@
   // карта маркеров
   var mapPins = document.querySelector('.map__pins');
 
-  // Генерация положения маркера по горизонтали
+  // Генерация адерса по горизонтали
   function getLocationX() {
     // от ширины контенера .map__pins
     return Math.floor(Math.random() * mapPins.offsetWidth);
   }
 
-  // Генерация положения маркера по вертикали
+  // Генерация адреса по вертикали
   function getLocationY() {
     // от 130 до 630
     return Math.floor(Math.random() * 500) + 130;
@@ -53,7 +53,7 @@
     return offerPhotos;
   }
 
-  // Функция генерации массива
+  // Функция генерации массива объявлений
   function generateAdverts(count) {
     var advertsArr = [];
     var locationX;
@@ -93,7 +93,6 @@
   }
 
   window.data = {
-    // Вызов генерации массива объявлений с данными
     adverts: generateAdverts(8)
   };
 })();

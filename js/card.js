@@ -40,7 +40,7 @@
     return photosFragment;
   }
 
-  // Функция создания DOM-элемента на основе объекта
+  // Функция создания карточи объявления
   function renderCardElement(card) {
     var cardElement = cardTemplate.cloneNode(true);
     var cardElemetnType = cardElement.querySelector('.popup__type');
