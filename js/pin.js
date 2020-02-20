@@ -5,6 +5,10 @@
   var MAP_PIN_WIDTH = 50;
   var MAP_PIN_HEIGHT = 70;
 
+  var mapPinMain = document.querySelector('.map__pin--main');
+  var MAP_PIN_MAIN_WIDTH = mapPinMain.offsetWidth;
+  var MAP_PIN_MAIN_HEIGHT = mapPinMain.offsetHeight;
+  var MAP_PIN_MAIN_HEIGHT_POINTER = mapPinMain.offsetHeight + 25;
   // Шаблон для маркеров
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
@@ -22,6 +26,9 @@
   }
 
   window.pin = {
-    renderPinElement: renderPinElement
+    renderPinElement: renderPinElement,
+    MAP_PIN_MAIN_WIDTH: MAP_PIN_MAIN_WIDTH,
+    MAP_PIN_MAIN_HEIGHT: MAP_PIN_MAIN_HEIGHT,
+    MAP_PIN_MAIN_HEIGHT_POINTER: MAP_PIN_MAIN_HEIGHT_POINTER
   };
 })();
