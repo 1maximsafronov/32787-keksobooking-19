@@ -85,6 +85,7 @@
     mapPins.appendChild(pinsFragment);
     // Отрисовка и добавление карточки объявления
     mapContainer.insertBefore(cardsFragment, mapContainer.querySelector('.map__filters-container'));
+
   }
 
   window.map = {
