@@ -23,18 +23,17 @@
 
   // Проерка координат главного маркера на выход за пределы карты
   function checkMainPinCoords(coords) {
-    var bool = false;
     if ((coords.y + MAP_PIN_MAIN_HEIGHT_POINTER) >= 130) {
       if ((coords.y + MAP_PIN_MAIN_HEIGHT_POINTER) <= 630) {
         if ((coords.x + MAP_PIN_MAIN_WIDTH) <= mapPins.offsetWidth) {
           if (coords.x >= 0) {
-            bool = true;
+            return true;
           }
         }
       }
     }
 
-    return bool;
+    return false;
   }
 
   // Обработчик событий при передвижении главного маркера
