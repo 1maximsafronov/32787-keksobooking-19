@@ -110,7 +110,7 @@
       node.style.fontSize = '30px';
 
       node.textContent = errorMessage;
-      document.body.insertAdjacentElement('afterbegin', node);
+      document.body.appendChild(node);
 
       function hideError() {
         node.remove();
@@ -127,6 +127,6 @@
   window.data = {
     generateAdverts: generateAdverts,
     // adverts: adverts
-    adverts: getAdverts()
+    getAdverts: getAdverts()
   };
 })();

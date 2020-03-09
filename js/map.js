@@ -4,7 +4,7 @@
   // карта маркеров
   var mapPins = document.querySelector('.map__pins');
   // Контейнер куда встявлять карточки
-  var mapContainer = document.querySelector('.map');
+  var map = document.querySelector('.map');
 
   // Функция задания обработчиков событий карточки и метки
   function setClickOnPin(pin, card) {
@@ -69,14 +69,14 @@
   }
 
   // Функция отрисовки всех всех маркеров и карточек объявлений
-  function drawPins() {
-    var advertsArr = window.data.adverts;
+  function renderPins() {
+    var advertsArr = window.data.getAdverts;
 
     var pinsFragment = document.createDocumentFragment();
     var cardsFragment = document.createDocumentFragment();
     for (var j = 0; j < advertsArr.length; j++) {
-      var pinElement = window.pin.renderPinElement(advertsArr[j]);
-      var cardPopup = window.card.renderCardElement(advertsArr[j]);
+      var pinElement = window.pin.createPinElement(advertsArr[j]);
+      var cardPopup = window.card.createCardElement(advertsArr[j]);
       setClickOnPin(pinElement, cardPopup);
       pinsFragment.appendChild(pinElement);
       cardsFragment.appendChild(cardPopup);
@@ -84,11 +84,31 @@
     // Отрисовка маркеров в контенер на на карту страницы
     mapPins.appendChild(pinsFragment);
     // Отрисовка и добавление карточки объявления
-    mapContainer.insertBefore(cardsFragment, mapContainer.querySelector('.map__filters-container'));
+    map.insertBefore(cardsFragment, map.querySelector('.map__filters-container'));
+  }
 
+  function activateMap() {
+    renderPins();
+    map.classList.remove('map--faded');
+  }
+
+  function disableMap() {
+    var pins = map.querySelectorAll('.map__pin');
+    var cards = mapPins.querySelectorAll('.popup');
+    map.classList.add('map--faded');
+    pins.forEach(function (element) {
+      if (!element.classList.contains('map__pin--main')) {
+        element.remove();
+      }
+    });
+    cards.forEach(function (element) {
+      element.remove();
+    });
   }
 
   window.map = {
-    drawPins: drawPins
+    renderPins: renderPins,
+    activateMap: activateMap,
+    disableMap: disableMap
   };
 })();
