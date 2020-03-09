@@ -10,7 +10,7 @@
   // Главный маркер на карте
   var mapPinMain = document.querySelector('.map__pin--main');
 
-  var adForm = document.querySelector('.ad-form--disabled');
+  var adForm = document.querySelector('.ad-form');
   var mapFilters = document.querySelector('.map__filters');
 
   // Функция отключения элемента
@@ -68,8 +68,16 @@
     document.querySelector('.map').classList.remove('map--faded');
   }
 
+  function deactivationPage() {
+    disableForm(adForm);
+    disableForm(mapFilters);
+    adForm.classList.add('ad-form--disabled');
+    document.querySelector('.map').classList.add('map--faded');
+  }
+
   window.main = {
-    activationPage: activationPage
+    activationPage: activationPage,
+    deactivationPage: deactivationPage
   };
 
 })();

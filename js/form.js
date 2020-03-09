@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   // Форма ввода данных объявления
-  var adForm = document.querySelector('.ad-form--disabled');
+  var adForm = document.querySelector('.ad-form');
   var adTitileInput = adForm.querySelector('input[id="title"]');
   var adTypeSelect = adForm.querySelector('select[id="type"]');
   var adPriceInput = adForm.querySelector('input[id="price"]');
@@ -122,6 +122,9 @@
 
   adRoomNumber.addEventListener('change', onRoomNumberChange);
   adCapacity.addEventListener('change', onCapacityChange);
+
+  adForm.addEventListener('submit', function () {
+  });
 
   window.form = {
     adAddress: adAddress,

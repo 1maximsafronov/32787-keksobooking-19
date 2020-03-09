@@ -119,7 +119,7 @@
       setTimeout(hideError, 5000);
     }
 
-    window.load(onSuccess, onError);
+    window.backend.load(onSuccess, onError);
 
     return adverts;
   }
