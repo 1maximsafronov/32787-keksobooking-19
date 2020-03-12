@@ -41,7 +41,7 @@
   }
 
   // Функция создания карточи объявления
-  function renderCardElement(card) {
+  function createCardElement(card) {
     var cardElement = cardTemplate.cloneNode(true);
     var cardElemetnType = cardElement.querySelector('.popup__type');
     var cardElementTime = cardElement.querySelector('.popup__text--time');
@@ -122,6 +122,6 @@
   }
 
   window.card = {
-    renderCardElement: renderCardElement
+    createCardElement: createCardElement
   };
 })();
