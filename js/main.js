@@ -6,22 +6,21 @@
   var mapPinMain = document.querySelector('.map__pin--main');
 
   // Отключение форм при запуске страницы
-  window.form.disableForms();
-
-  // Задание адреса в форме объявления при мервой загрузке страницы
-  window.form.setAddressValue((mapPinMain.offsetLeft + Math.floor(window.mainpin.MAP_PIN_MAIN_WIDTH / 2)), (mapPinMain.offsetTop + Math.floor(window.mainpin.MAP_PIN_MAIN_HEIGHT / 2)));
+  deactivatePage();
 
   // Функция активации страницы
   function activatePage() {
-    window.form.enableForms();
+    window.adform.enableForms();
     window.map.activateMap();
-    window.form.validateRoomsCapacity();
+    window.adform.validateRoomsCapacity();
   }
   // Функция деактивации старинцы
   function deactivatePage() {
-    window.form.disableForms();
+    window.adform.disableForms();
     window.map.disableMap();
     window.mainpin.disable();
+    // Задание адреса в форме объявления при первой загрузке страницы
+    window.adform.setAddressValue((mapPinMain.offsetLeft + Math.floor(window.mainpin.MAP_PIN_MAIN_WIDTH / 2)), (mapPinMain.offsetTop + Math.floor(window.mainpin.MAP_PIN_MAIN_HEIGHT / 2)));
   }
 
   window.main = {

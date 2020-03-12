@@ -11,7 +11,6 @@
   var adTimeIn = adForm.querySelector('select[id="timein"]');
   var adTimeOut = adForm.querySelector('select[id="timeout"]');
   var adAddress = adForm.querySelector('input[id="address"]');
-
   var successTemplate = document.querySelector('#success').content.querySelector('.success');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
   // Функция задания поля адреса
@@ -165,7 +164,6 @@
     document.addEventListener('click', onMessageClick);
     document.addEventListener('keydown', onMessageClick);
     document.body.appendChild(successMessage);
-
     adForm.reset();
   }
   // При ошибке отправки формы
@@ -211,7 +209,7 @@
     window.main.deactivatePage();
   });
 
-  window.form = {
+  window.adform = {
     adAddress: adAddress,
     validateRoomsCapacity: validateRoomsCapacity,
     setAddressValue: setAddressValue,

@@ -67,7 +67,7 @@
         mapPinMain.style.top = newPincoords.y + 'px';
 
         // Задание адреса в форме объявления при активации страницы
-        window.form.setAddressValue(mapPinMain.offsetLeft + Math.floor(MAP_PIN_MAIN_WIDTH / 2), mapPinMain.offsetTop + MAP_PIN_MAIN_HEIGHT_POINTER);
+        window.adform.setAddressValue(mapPinMain.offsetLeft + Math.floor(MAP_PIN_MAIN_WIDTH / 2), mapPinMain.offsetTop + MAP_PIN_MAIN_HEIGHT_POINTER);
       }
     }
 
@@ -75,22 +75,23 @@
       upEvt.preventDefault();
 
       // Задание адреса в форме объявления при активации страницы
-      window.form.setAddressValue(mapPinMain.offsetLeft + Math.floor(MAP_PIN_MAIN_WIDTH / 2), mapPinMain.offsetTop + MAP_PIN_MAIN_HEIGHT_POINTER);
+      window.adform.setAddressValue(mapPinMain.offsetLeft + Math.floor(MAP_PIN_MAIN_WIDTH / 2), mapPinMain.offsetTop + MAP_PIN_MAIN_HEIGHT_POINTER);
       document.removeEventListener('mousemove', onPinMainMove);
       document.removeEventListener('mouseup', onPinMainMouseUp);
 
     }
-
-    document.addEventListener('mousemove', onPinMainMove);
-    document.addEventListener('mouseup', onPinMainMouseUp);
+    if (evt.button === 0) {
+      document.addEventListener('mousemove', onPinMainMove);
+      document.addEventListener('mouseup', onPinMainMouseUp);
+    }
   });
 
   function disable() {
-    mapPinMain.style.left = startMainPinCoords.x;
-    mapPinMain.style.top = startMainPinCoords.y;
+    mapPinMain.style.left = startMainPinCoords.x + 'px';
+    mapPinMain.style.top = startMainPinCoords.y + 'px';
 
     // Задание адреса в форме объявления при мервой загрузке страницы
-    window.form.setAddressValue((startMainPinCoords.x + Math.floor(MAP_PIN_MAIN_WIDTH / 2)), (startMainPinCoords.y + Math.floor(MAP_PIN_MAIN_HEIGHT / 2)));
+    window.adform.setAddressValue((startMainPinCoords.x + Math.floor(MAP_PIN_MAIN_WIDTH / 2)), (startMainPinCoords.y + Math.floor(MAP_PIN_MAIN_HEIGHT / 2)));
 
     mapPinMain.addEventListener('mousedown', onPinMainFirstClick);
     mapPinMain.addEventListener('keydown', onPinMainFirstClick);
