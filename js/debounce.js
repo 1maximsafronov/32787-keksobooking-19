@@ -2,7 +2,7 @@
 
 (function () {
   var TIME_DELAY = 500;
-  window.debounce = function (cb) {
+  function debounce(cb) {
     var lastTimeout = null;
 
     return function () {
@@ -14,5 +14,7 @@
         cb.apply(null, parameters);
       }, TIME_DELAY);
     };
-  };
+  }
+
+  window.debounce = debounce;
 })();

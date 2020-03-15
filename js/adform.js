@@ -1,6 +1,6 @@
 'use strict';
+
 (function () {
-  var mapFilters = document.querySelector('.map__filters');
   // Форма ввода данных объявления
   var adForm = document.querySelector('.ad-form');
   var adTitileInput = adForm.querySelector('input[id="title"]');
@@ -11,57 +11,12 @@
   var adTimeIn = adForm.querySelector('select[id="timein"]');
   var adTimeOut = adForm.querySelector('select[id="timeout"]');
   var adAddress = adForm.querySelector('input[id="address"]');
+  adAddress.tabIndex = -1;
   var successTemplate = document.querySelector('#success').content.querySelector('.success');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
   // Функция задания поля адреса
   function setAddressValue(x, y) {
     adAddress.value = x + ', ' + y + '';
-  }
-  // Функция отключения элемента
-  function disableElements(elements) {
-    elements.forEach(function (element) {
-      element.disabled = true;
-    });
-  }
-  // Функция включения элемента
-  function enableElements(elements) {
-    elements.forEach(function (element) {
-      element.disabled = false;
-    });
-  }
-  // Функция включения формы
-  function enableForm(form) {
-    var selects = form.querySelectorAll('select');
-    var inputs = form.querySelectorAll('input');
-    var buttons = form.querySelectorAll('button');
-    var fieldsets = form.querySelectorAll('fieldset');
-    enableElements(selects);
-    enableElements(inputs);
-    enableElements(buttons);
-    enableElements(fieldsets);
-  }
-  // Функция отключения формы
-  function disableForm(form) {
-    var selects = form.querySelectorAll('select');
-    var inputs = form.querySelectorAll('input');
-    var buttons = form.querySelectorAll('button');
-    var fieldsets = form.querySelectorAll('fieldset');
-    disableElements(selects);
-    disableElements(inputs);
-    disableElements(buttons);
-    disableElements(fieldsets);
-  }
-  // функция Включение всех форм
-  function enableForms() {
-    enableForm(adForm);
-    enableForm(mapFilters);
-    adForm.classList.remove('ad-form--disabled');
-  }
-  // Функция Отключениявысез форм
-  function disableForms() {
-    disableForm(adForm);
-    disableForm(mapFilters);
-    adForm.classList.add('ad-form--disabled');
   }
   function onAdTitleInvalid() {
     var errorMessage = '';
@@ -95,50 +50,23 @@
     adPriceInput.min = placeholderPrice[adTypeSelect.value];
   }
 
-  function checkRooms1(rooms, capacity) {
-    var bool = false;
+  function getErrorCapacity(rooms, capacity) {
     if (rooms === 1 && capacity !== 1) {
-      bool = true;
+      return 'В таком количестве комнат может быть от 1 гость';
+    } else if (rooms === 2 && (capacity < 1 || capacity > 2)) {
+      return 'В таком количестве комнат может быть от 1 до 2-х гостей';
+    } else if (rooms === 3 && (capacity < 1 || capacity > 3)) {
+      return 'В таком количестве комнат может быть от 1 до 3-х гостей';
+    } else if (rooms === 100 && capacity !== 0) {
+      return 'Такое количество комнат не для гостей';
     }
-    return bool;
-  }
-
-  function checkRooms2(rooms, capacity) {
-    var bool = false;
-    if (rooms === 2 && (capacity < 1 || capacity > 2)) {
-      bool = true;
-    }
-    return bool;
-  }
-
-  function checkRooms3(rooms, capacity) {
-    var bool = false;
-    if (rooms === 3 && (capacity < 1 || capacity > 3)) {
-      bool = true;
-    }
-    return bool;
-  }
-  function checkRooms4(rooms, capacity) {
-    var bool = false;
-    if (rooms === 100 && capacity !== 0) {
-      bool = true;
-    }
-    return bool;
+    return '';
   }
   // Функция проверки количества комнат и количества гостей
   function validateRoomsCapacity() {
     var rooms = Number(adRoomNumber.value);
     var capacity = Number(adCapacity.value);
-    var errorMessage = '';
-    if (checkRooms1(rooms, capacity)) {
-      errorMessage = 'В таком количестве комнат может быть от 1 гость';
-    } else if (checkRooms2(rooms, capacity)) {
-      errorMessage = 'В таком количестве комнат может быть от 1 до 2-х гостей';
-    } else if (checkRooms3(rooms, capacity)) {
-      errorMessage = 'В таком количестве комнат может быть от 1 до 3-х гостей';
-    } else if (checkRooms4(rooms, capacity)) {
-      errorMessage = 'Такое количество комнат не для гостей';
-    }
+    var errorMessage = getErrorCapacity(rooms, capacity);
     adCapacity.setCustomValidity(errorMessage);
   }
   // Функция при выборе количества комнат
@@ -209,11 +137,22 @@
     window.main.deactivatePage();
   });
 
+  function enable() {
+    window.formsactions.enableForm(adForm);
+    adForm.classList.remove('ad-form--disabled');
+    validateRoomsCapacity();
+  }
+
+  function disable() {
+    adForm.classList.add('ad-form--disabled');
+    window.formsactions.disableForm(adForm);
+  }
+
   window.adform = {
     adAddress: adAddress,
     validateRoomsCapacity: validateRoomsCapacity,
     setAddressValue: setAddressValue,
-    enableForms: enableForms,
-    disableForms: disableForms
+    enable: enable,
+    disable: disable
   };
 })();

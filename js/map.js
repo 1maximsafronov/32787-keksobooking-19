@@ -95,17 +95,18 @@
   function removePinsCards() {
     var pins = map.querySelectorAll('.map__pin');
     var cards = mapPins.querySelectorAll('.popup');
-    pins.forEach(function (element) {
-      if (!element.classList.contains('map__pin--main')) {
-        element.remove();
+    pins.forEach(function (pin) {
+      if (!pin.classList.contains('map__pin--main')) {
+        pin.remove();
       }
     });
-    cards.forEach(function (element) {
-      element.remove();
+    cards.forEach(function (card) {
+      card.remove();
     });
   }
 
   function activateMap() {
+    window.filterform.enable();
     renderPins(window.data.adverts);
     map.classList.remove('map--faded');
   }
@@ -113,6 +114,9 @@
   function disableMap() {
     map.classList.add('map--faded');
     removePinsCards();
+    window.mainpin.reset();
+    window.filterform.reset();
+    window.filterform.disable();
   }
 
   window.map = {
