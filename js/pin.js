@@ -9,7 +9,7 @@
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   // Функция создания маркера, DOM-элемента на основе объекта
-  function createPinElement(pin) {
+  function createElement(pin) {
     var pinElement = pinTemplate.cloneNode(true);
 
     // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
@@ -22,6 +22,6 @@
   }
 
   window.pin = {
-    createPinElement: createPinElement
+    createElement: createElement
   };
 })();

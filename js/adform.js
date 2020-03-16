@@ -28,6 +28,7 @@
       errorMessage = 'Обязательное поле';
     }
     adTitileInput.setCustomValidity(errorMessage);
+    adTitileInput.style.outline = '2px solid red';
   }
   // При вводе заголовка
   function onAdTitleInput(evt) {
@@ -104,10 +105,12 @@
         evtMsg.preventDefault();
         errorMessage.remove();
         errorButton.removeEventListener('click', onMessageClick);
+        document.removeEventListener('click', onMessageClick);
         document.removeEventListener('keydown', onMessageClick);
       }
     }
     errorButton.addEventListener('click', onMessageClick);
+    document.addEventListener('click', onMessageClick);
     document.addEventListener('keydown', onMessageClick);
     document.querySelector('main').appendChild(errorMessage);
   }
@@ -123,6 +126,9 @@
   adTitileInput.addEventListener('input', onAdTitleInput);
   // Задание минимальной цены на аренду в зависимости от типа
   adTypeSelect.addEventListener('change', onAdTypeChange);
+  adPriceInput.addEventListener('invalid', function () {
+    adPriceInput.style.outline = '2px solid red';
+  });
   // Валидация времени заезда и выезда
   adTimeIn.addEventListener('change', function () {
     adTimeOut.value = adTimeIn.value;
@@ -132,14 +138,19 @@
   });
   adRoomNumber.addEventListener('change', onRoomNumberChange);
   adCapacity.addEventListener('change', onCapacityChange);
+  adCapacity.addEventListener('invalid', function () {
+    adCapacity.style.outline = '2px solid red';
+  });
   adForm.addEventListener('submit', onAdFormSubmit);
-  adForm.addEventListener('reset', function () {
+  adForm.addEventListener('reset', function (evt) {
+    evt.preventDefault();
     window.main.deactivatePage();
+    adForm.reset();
   });
 
   function enable() {
-    window.formsactions.enableForm(adForm);
     adForm.classList.remove('ad-form--disabled');
+    window.formsactions.enableForm(adForm);
     validateRoomsCapacity();
   }
 
