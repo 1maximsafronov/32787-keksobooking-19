@@ -9,10 +9,10 @@
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   // Функция создания маркера, DOM-элемента на основе объекта
-  function createPinElement(pin) {
+  function createElement(pin) {
     var pinElement = pinTemplate.cloneNode(true);
 
-    // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом. НО РАБОТАЕТ СТРАННО
+    // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
     pinElement.tabIndex = 0;
     pinElement.style = 'left: ' + (pin.location.x - MAP_PIN_WIDTH / 2) + 'px; top: ' + (pin.location.y - MAP_PIN_HEIGHT) + 'px;';
     pinElement.querySelector('img').src = pin.author.avatar;
@@ -22,6 +22,6 @@
   }
 
   window.pin = {
-    createPinElement: createPinElement
+    createElement: createElement
   };
 })();

@@ -80,11 +80,13 @@
       counter = advertsArr.length;
     }
     for (var i = 0; i < counter; i++) {
-      var pinElement = window.pin.createPinElement(advertsArr[i]);
-      var cardPopup = window.card.createCardElement(advertsArr[i]);
-      setClickOnPin(pinElement, cardPopup);
-      pinsFragment.appendChild(pinElement);
-      cardsFragment.appendChild(cardPopup);
+      if (advertsArr[i].offer) {
+        var pinElement = window.pin.createElement(advertsArr[i]);
+        var cardPopup = window.card.createElement(advertsArr[i]);
+        setClickOnPin(pinElement, cardPopup);
+        pinsFragment.appendChild(pinElement);
+        cardsFragment.appendChild(cardPopup);
+      }
     }
     // Отрисовка маркеров в контенер на на карту страницы
     mapPins.appendChild(pinsFragment);
@@ -94,31 +96,35 @@
 
   function removePinsCards() {
     var pins = map.querySelectorAll('.map__pin');
-    var cards = mapPins.querySelectorAll('.popup');
-    pins.forEach(function (element) {
-      if (!element.classList.contains('map__pin--main')) {
-        element.remove();
+    var cards = map.querySelectorAll('.map__card');
+    pins.forEach(function (pin) {
+      if (!pin.classList.contains('map__pin--main')) {
+        pin.remove();
       }
     });
-    cards.forEach(function (element) {
-      element.remove();
+    cards.forEach(function (card) {
+      card.remove();
     });
   }
 
-  function activateMap() {
-    renderPins(window.data.adverts);
+  function enable() {
     map.classList.remove('map--faded');
+    window.filterform.enable();
+    renderPins(window.data.adverts);
   }
 
-  function disableMap() {
+  function disable() {
     map.classList.add('map--faded');
     removePinsCards();
+    window.mainpin.reset();
+    window.filterform.reset();
+    window.filterform.disable();
   }
 
   window.map = {
     closeOpenedCard: closeOpenedCard,
     renderPins: renderPins,
-    activateMap: activateMap,
-    disableMap: disableMap
+    enable: enable,
+    disable: disable
   };
 })();

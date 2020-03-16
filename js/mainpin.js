@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var mapPins = document.querySelector('.map__pins');
   // Главный маркер на карте
@@ -8,7 +9,7 @@
   var MAP_PIN_MAIN_HEIGHT = mapPinMain.offsetHeight;
   var MAP_PIN_MAIN_HEIGHT_POINTER = mapPinMain.offsetHeight + 25;
 
-  var startMainPinCoords = {
+  var defaultPinCoords = {
     x: mapPinMain.offsetLeft,
     y: mapPinMain.offsetTop
   };
@@ -86,19 +87,21 @@
     }
   });
 
-  function disable() {
-    mapPinMain.style.left = startMainPinCoords.x + 'px';
-    mapPinMain.style.top = startMainPinCoords.y + 'px';
-
-    // Задание адреса в форме объявления при мервой загрузке страницы
-    window.adform.setAddressValue((startMainPinCoords.x + Math.floor(MAP_PIN_MAIN_WIDTH / 2)), (startMainPinCoords.y + Math.floor(MAP_PIN_MAIN_HEIGHT / 2)));
+  function reset() {
+    mapPinMain.style.left = defaultPinCoords.x + 'px';
+    mapPinMain.style.top = defaultPinCoords.y + 'px';
 
     mapPinMain.addEventListener('mousedown', onPinMainFirstClick);
     mapPinMain.addEventListener('keydown', onPinMainFirstClick);
+
+    // Задание адреса в форме объявления при мервой загрузке страницы
+    window.adform.setAddressValue((defaultPinCoords.x + Math.floor(MAP_PIN_MAIN_WIDTH / 2)), (defaultPinCoords.y + Math.floor(MAP_PIN_MAIN_HEIGHT / 2)));
+
+
   }
 
   window.mainpin = {
-    disable: disable,
+    reset: reset,
     MAP_PIN_MAIN_WIDTH: MAP_PIN_MAIN_WIDTH,
     MAP_PIN_MAIN_HEIGHT: MAP_PIN_MAIN_HEIGHT,
     MAP_PIN_MAIN_HEIGHT_POINTER: MAP_PIN_MAIN_HEIGHT_POINTER
