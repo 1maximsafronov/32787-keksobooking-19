@@ -1,37 +1,35 @@
 'use strict';
 
 (function () {
-  // Шаблон для карточек объявлений
+
   var cardTemplate = document.querySelector('#card').content.querySelector('.popup');
 
   function translateOfferType(type) {
-    var cardOfferType = {
+    var houseType = {
       'house': 'Дом',
       'flat': 'Квартира',
       'palace': 'Дворец',
       'bungalo': 'Бунгало'
     };
-    return cardOfferType[type];
-  }
 
+    return houseType[type];
+  }
   // Получаем список особенностей
-  function changeCardFeatures(cardFeatures, cardOfferFeatures) {
+  function changeCardFeatures(cardFeatures, advertFeatures) {
     var cardElementFeatures = cardFeatures.querySelectorAll('.popup__feature');
     cardElementFeatures.forEach(function (item) {
       item.style.display = 'none';
     });
-    cardOfferFeatures.forEach(function (item) {
+    advertFeatures.forEach(function (item) {
       cardFeatures.querySelector('.popup__feature--' + item).style.display = 'inline-block';
     });
   }
-
-
   // Получаем набор фотографий объявления
-  function getCardPhotos(cardOfferPhotos) {
+  function getCardPhotos(advertPhotos) {
     var photoTemplate = cardTemplate.querySelector('.popup__photos .popup__photo');
     var photoElement;
     var photosFragment = document.createDocumentFragment();
-    cardOfferPhotos.forEach(function (photo) {
+    advertPhotos.forEach(function (photo) {
       photoElement = photoTemplate.cloneNode(true);
       photoElement.src = photo;
       photosFragment.appendChild(photoElement);
@@ -39,9 +37,8 @@
 
     return photosFragment;
   }
-
   // Функция создания карточи объявления
-  function createElement(card) {
+  function createElement(advert) {
     var cardElement = cardTemplate.cloneNode(true);
     var cardElemetnType = cardElement.querySelector('.popup__type');
     var cardElementTime = cardElement.querySelector('.popup__text--time');
@@ -55,50 +52,50 @@
     var cardElementDescription = cardElement.querySelector('.popup__description');
 
     // Заголовок
-    if (card.offer.title) {
-      cardElementTitle.textContent = card.offer.title;
+    if (advert.offer.title) {
+      cardElementTitle.textContent = advert.offer.title;
     } else {
       cardElementTitle.style.display = 'none';
     }
     // Адресс
-    if (card.offer.address) {
-      cardElementAddress.textContent = card.offer.address;
+    if (advert.offer.address) {
+      cardElementAddress.textContent = advert.offer.address;
     } else {
       cardElementAddress.style.display = 'none';
     }
     // Цена
-    if (card.offer.price) {
-      cardElementPrice.textContent = card.offer.price + '₽/ночь';
+    if (advert.offer.price) {
+      cardElementPrice.textContent = advert.offer.price + '₽/ночь';
     } else {
       cardElementPrice.style.display = 'none';
     }
     // Тип жилья
-    if (card.offer.type) {
-      cardElemetnType.textContent = translateOfferType(card.offer.type);
+    if (advert.offer.type) {
+      cardElemetnType.textContent = translateOfferType(advert.offer.type);
     } else {
       cardElemetnType.style.display = 'none';
     }
     // Количество комнат и гостей
-    if (card.offer.rooms && card.offer.guests) {
-      cardElementCapacity.textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
+    if (advert.offer.rooms && advert.offer.guests) {
+      cardElementCapacity.textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
     } else {
       cardElementCapacity.style.display = 'none';
     }
     // Время въезда/выезда
-    if (card.offer.checkin && card.offer.checkout) {
-      cardElementTime.textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+    if (advert.offer.checkin && advert.offer.checkout) {
+      cardElementTime.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
     } else {
       cardElementTime.style.display = 'none';
     }
     // Наличие дополнительных особенностей
-    if (card.offer.features.length) {
-      changeCardFeatures(cardElementFeatures, card.offer.features);
+    if (advert.offer.features.length) {
+      changeCardFeatures(cardElementFeatures, advert.offer.features);
     } else {
       cardElementFeatures.style.display = 'none';
     }
     // Описание объявления
-    if (card.offer.description) {
-      cardElementDescription.textContent = card.offer.description;
+    if (advert.offer.description) {
+      cardElementDescription.textContent = advert.offer.description;
     } else {
       cardElementDescription.style.display = 'none';
     }
@@ -106,18 +103,19 @@
     while (cardElementPhotos.firstChild) {
       cardElementPhotos.removeChild(cardElementPhotos.firstChild);
     }
-    if (card.offer.photos.length) {
-      cardElementPhotos.appendChild(getCardPhotos(card.offer.photos));
+    if (advert.offer.photos.length) {
+      cardElementPhotos.appendChild(getCardPhotos(advert.offer.photos));
     } else {
       cardElementPhotos.style.display = 'none';
     }
     // Аватарка автора
-    if (card.author.avatar) {
-      cardElementAvatar.src = card.author.avatar;
+    if (advert.author.avatar) {
+      cardElementAvatar.src = advert.author.avatar;
     } else {
       cardElementAvatar.style.display = 'none';
     }
     cardElement.classList.add('hidden');
+
     return cardElement;
   }
 

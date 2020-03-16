@@ -9,6 +9,19 @@
   var guestsFilter = filterForm.querySelector('#housing-guests');
   var featuresFilter = filterForm.querySelector('#housing-features');
 
+  filterForm.addEventListener('change', window.debounce(filterAdverts));
+
+  function filterAdverts() {
+    window.map.closeOpenedCard();
+    var filteredAdverts = adverts
+      .filter(checkByType)
+      .filter(checkByPrice)
+      .filter(checkByRooms)
+      .filter(checkByGuests)
+      .filter(checkByFeatures);
+    window.map.renderPins(filteredAdverts);
+  }
+
   function checkByType(advert) {
     if (typeFilter.value === 'any') {
       return true;
@@ -63,19 +76,6 @@
     });
     return isFeatureMatch;
   }
-
-  function filterAdverts() {
-    window.map.closeOpenedCard();
-    var filteredAdverts = adverts
-      .filter(checkByType)
-      .filter(checkByPrice)
-      .filter(checkByRooms)
-      .filter(checkByGuests)
-      .filter(checkByFeatures);
-    window.map.renderPins(filteredAdverts);
-  }
-
-  filterForm.addEventListener('change', window.debounce(filterAdverts));
 
   function reset() {
     filterForm.reset();

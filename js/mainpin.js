@@ -3,37 +3,39 @@
 (function () {
   var mapPins = document.querySelector('.map__pins');
   // Главный маркер на карте
-  var mapPinMain = document.querySelector('.map__pin--main');
+  var mainPin = document.querySelector('.map__pin--main');
+  mainPin.tabIndex = 0;
 
-  var MAP_PIN_MAIN_WIDTH = mapPinMain.offsetWidth;
-  var MAP_PIN_MAIN_HEIGHT = mapPinMain.offsetHeight;
-  var MAP_PIN_MAIN_HEIGHT_POINTER = mapPinMain.offsetHeight + 25;
+  var MAIN_PIN_WIDTH = mainPin.offsetWidth;
+  var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
+  var MAIN_PIN_HEIGHT_POINTER = mainPin.offsetHeight + 25;
 
   var defaultPinCoords = {
-    x: mapPinMain.offsetLeft,
-    y: mapPinMain.offsetTop
+    x: mainPin.offsetLeft,
+    y: mainPin.offsetTop
   };
 
   // Обработчики собыитй при первом клике на главный маркер
-  mapPinMain.addEventListener('mousedown', onPinMainFirstClick);
-  mapPinMain.addEventListener('keydown', onPinMainFirstClick);
+  mainPin.addEventListener('mousedown', onMainPinFirstClick);
+  mainPin.addEventListener('keydown', onMainPinFirstClick);
+  // Обработчик событий при передвижении главного маркера
+  mainPin.addEventListener('mousedown', onMainPinMousedown);
 
-  // Функция обработчик нажатия на главный маркер
-  function onPinMainFirstClick(evt) {
+  function onMainPinFirstClick(evt) {
     if (evt.button === 0 || evt.key === 'Enter') {
       evt.preventDefault();
       window.main.activatePage();
-      mapPinMain.removeEventListener('mousedown', onPinMainFirstClick);
-      mapPinMain.removeEventListener('keydown', onPinMainFirstClick);
+      mainPin.removeEventListener('mousedown', onMainPinFirstClick);
+      mainPin.removeEventListener('keydown', onMainPinFirstClick);
     }
   }
 
   // Проерка координат главного маркера на выход за пределы карты
   function checkMainPinCoords(coords) {
-    if ((coords.y + MAP_PIN_MAIN_HEIGHT_POINTER) >= 130) {
-      if ((coords.y + MAP_PIN_MAIN_HEIGHT_POINTER) <= 630) {
-        if ((coords.x + MAP_PIN_MAIN_WIDTH) <= mapPins.offsetWidth) {
-          if (coords.x >= 0) {
+    if ((coords.y + MAIN_PIN_HEIGHT_POINTER) >= 130) {
+      if ((coords.y + MAIN_PIN_HEIGHT_POINTER) <= 630) {
+        if ((coords.x + MAIN_PIN_WIDTH / 2) <= mapPins.offsetWidth) {
+          if (coords.x >= (0 - MAIN_PIN_WIDTH / 2)) {
             return true;
           }
         }
@@ -43,8 +45,7 @@
     return false;
   }
 
-  // Обработчик событий при передвижении главного маркера
-  mapPinMain.addEventListener('mousedown', function (evt) {
+  function onMainPinMousedown(evt) {
     evt.preventDefault();
 
     var startCoords = {
@@ -52,58 +53,53 @@
       y: evt.clientY
     };
 
-    function onPinMainMove(moveEvt) {
+    function onMainPinMove(moveEvt) {
       moveEvt.preventDefault();
 
       var newPincoords = {
-        x: mapPinMain.offsetLeft - (startCoords.x - moveEvt.clientX),
-        y: mapPinMain.offsetTop - (startCoords.y - moveEvt.clientY)
+        x: mainPin.offsetLeft - (startCoords.x - moveEvt.clientX),
+        y: mainPin.offsetTop - (startCoords.y - moveEvt.clientY)
       };
 
       startCoords.x = moveEvt.clientX;
       startCoords.y = moveEvt.clientY;
 
       if (checkMainPinCoords(newPincoords)) {
-        mapPinMain.style.left = newPincoords.x + 'px';
-        mapPinMain.style.top = newPincoords.y + 'px';
+        mainPin.style.left = newPincoords.x + 'px';
+        mainPin.style.top = newPincoords.y + 'px';
 
         // Задание адреса в форме объявления при активации страницы
-        window.adform.setAddressValue(mapPinMain.offsetLeft + Math.floor(MAP_PIN_MAIN_WIDTH / 2), mapPinMain.offsetTop + MAP_PIN_MAIN_HEIGHT_POINTER);
+        window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
       }
     }
 
-    function onPinMainMouseUp(upEvt) {
+    function onMainPinMouseUp(upEvt) {
       upEvt.preventDefault();
 
       // Задание адреса в форме объявления при активации страницы
-      window.adform.setAddressValue(mapPinMain.offsetLeft + Math.floor(MAP_PIN_MAIN_WIDTH / 2), mapPinMain.offsetTop + MAP_PIN_MAIN_HEIGHT_POINTER);
-      document.removeEventListener('mousemove', onPinMainMove);
-      document.removeEventListener('mouseup', onPinMainMouseUp);
+      window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
+      document.removeEventListener('mousemove', onMainPinMove);
+      document.removeEventListener('mouseup', onMainPinMouseUp);
 
     }
     if (evt.button === 0) {
-      document.addEventListener('mousemove', onPinMainMove);
-      document.addEventListener('mouseup', onPinMainMouseUp);
+      document.addEventListener('mousemove', onMainPinMove);
+      document.addEventListener('mouseup', onMainPinMouseUp);
     }
-  });
+  }
 
   function reset() {
-    mapPinMain.style.left = defaultPinCoords.x + 'px';
-    mapPinMain.style.top = defaultPinCoords.y + 'px';
+    mainPin.style.left = defaultPinCoords.x + 'px';
+    mainPin.style.top = defaultPinCoords.y + 'px';
 
-    mapPinMain.addEventListener('mousedown', onPinMainFirstClick);
-    mapPinMain.addEventListener('keydown', onPinMainFirstClick);
+    mainPin.addEventListener('mousedown', onMainPinFirstClick);
+    mainPin.addEventListener('keydown', onMainPinFirstClick);
 
-    // Задание адреса в форме объявления при мервой загрузке страницы
-    window.adform.setAddressValue((defaultPinCoords.x + Math.floor(MAP_PIN_MAIN_WIDTH / 2)), (defaultPinCoords.y + Math.floor(MAP_PIN_MAIN_HEIGHT / 2)));
-
-
+    // Задание адреса в форме объявления при первой загрузке страницы
+    window.adform.setAddressValue((defaultPinCoords.x + Math.floor(MAIN_PIN_WIDTH / 2)), (defaultPinCoords.y + Math.floor(MAIN_PIN_HEIGHT / 2)));
   }
 
   window.mainpin = {
-    reset: reset,
-    MAP_PIN_MAIN_WIDTH: MAP_PIN_MAIN_WIDTH,
-    MAP_PIN_MAIN_HEIGHT: MAP_PIN_MAIN_HEIGHT,
-    MAP_PIN_MAIN_HEIGHT_POINTER: MAP_PIN_MAIN_HEIGHT_POINTER
+    reset: reset
   };
 })();

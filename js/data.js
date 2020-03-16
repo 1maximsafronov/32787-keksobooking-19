@@ -30,7 +30,6 @@
 
   window.backend.load(onSuccess, onError);
 
-
   window.data = {
     adverts: adverts
   };
