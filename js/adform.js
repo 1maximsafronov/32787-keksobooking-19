@@ -1,37 +1,50 @@
-// Для галочки, задание 6.3
 'use strict';
 
 (function () {
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   // Форма ввода данных объявления
   var adForm = document.querySelector('.ad-form');
-  var adTitileInput = adForm.querySelector('input[id="title"]');
-  var adTypeSelect = adForm.querySelector('select[id="type"]');
-  var adPriceInput = adForm.querySelector('input[id="price"]');
+  var adTitle = adForm.querySelector('input[id="title"]');
+  var adType = adForm.querySelector('select[id="type"]');
+  var adPrice = adForm.querySelector('input[id="price"]');
   var adRoomNumber = adForm.querySelector('select[id="room_number"]');
   var adCapacity = adForm.querySelector('select[id="capacity"]');
   var adTimeIn = adForm.querySelector('select[id="timein"]');
   var adTimeOut = adForm.querySelector('select[id="timeout"]');
   var adAddress = adForm.querySelector('input[id="address"]');
   adAddress.tabIndex = -1;
+  var avatarChooser = adForm.querySelector('input[id="avatar"]');
+  var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
+  var imagesChooser = adForm.querySelector('input[id="images"]');
+  var adImagesContainer = adForm.querySelector('.ad-form__photo');
   var successTemplate = document.querySelector('#success').content.querySelector('.success');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-  // Функция задания поля адреса
+
   function setAddressValue(x, y) {
     adAddress.value = x + ', ' + y + '';
   }
+
+  function setInvalidOutline(target) {
+    target.style.outline = '2px solid red';
+  }
+
+  function clearInvalidOutline(target) {
+    target.style.outline = 'none';
+  }
+
   function onAdTitleInvalid() {
     var errorMessage = '';
-    if (adTitileInput.validity.tooShort) {
+    if (adTitle.validity.tooShort) {
       errorMessage = 'Заголовок должен состоять минимум из 30-ти символов';
-    } else if (adTitileInput.validity.tooLong) {
+    } else if (adTitle.validity.tooLong) {
       errorMessage = 'Заголовок не должен привышать 100 символов';
-    } else if (adTitileInput.validity.valueMissing) {
+    } else if (adTitle.validity.valueMissing) {
       errorMessage = 'Обязательное поле';
     }
-    adTitileInput.setCustomValidity(errorMessage);
-    adTitileInput.style.outline = '2px solid red';
+    adTitle.setCustomValidity(errorMessage);
+    setInvalidOutline(adTitle);
   }
-  // При вводе заголовка
+
   function onAdTitleInput(evt) {
     var target = evt.target;
     if (target.value.length < 30) {
@@ -40,7 +53,7 @@
       target.setCustomValidity('');
     }
   }
-  // при изменении типа жилья
+
   function onAdTypeChange() {
     var placeholderPrice = {
       'bungalo': 0,
@@ -48,8 +61,8 @@
       'house': 5000,
       'palace': 10000
     };
-    adPriceInput.placeholder = placeholderPrice[adTypeSelect.value];
-    adPriceInput.min = placeholderPrice[adTypeSelect.value];
+    adPrice.placeholder = placeholderPrice[adType.value];
+    adPrice.min = placeholderPrice[adType.value];
   }
 
   function getErrorCapacity(rooms, capacity) {
@@ -64,20 +77,65 @@
     }
     return '';
   }
-  // Функция проверки количества комнат и количества гостей
+
   function validateRoomsCapacity() {
     var rooms = Number(adRoomNumber.value);
     var capacity = Number(adCapacity.value);
     var errorMessage = getErrorCapacity(rooms, capacity);
     adCapacity.setCustomValidity(errorMessage);
   }
-  // Функция при выборе количества комнат
+
   function onCapacityChange() {
     validateRoomsCapacity();
   }
-  // Функция при выборе количества гостей
+
   function onRoomNumberChange() {
     validateRoomsCapacity();
+  }
+
+  function onAvatarChooserChange() {
+    var file = avatarChooser.files[0];
+    var fileName = file.name.toLowerCase();
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        avatarPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function onImagesChooserChange() {
+    var file = imagesChooser.files[0];
+    var fileName = file.name.toLowerCase();
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        var img = document.createElement('img');
+        img.src = reader.result;
+        img.style.width = 70 + 'px';
+        img.style.height = 70 + 'px';
+        adImagesContainer.appendChild(img);
+      });
+
+      reader.readAsDataURL(file);
+    }
+  }
+  // Очистка выбранных фотографий
+  function removeImages() {
+    while (adImagesContainer.firstChild) {
+      adImagesContainer.removeChild(adImagesContainer.firstChild);
+    }
   }
   // При успешной отправке формы
   function onFormSuccess() {
@@ -120,17 +178,17 @@
   function onAdFormSubmit(evt) {
     evt.preventDefault();
     window.backend.upload(new FormData(adForm), onFormSuccess, onFormError);
+    clearInvalidOutline(adPrice);
+    clearInvalidOutline(adCapacity);
+    clearInvalidOutline(adTitle);
   }
 
-  // Обработчик поля заголовка
-  adTitileInput.addEventListener('invalid', onAdTitleInvalid);
-  adTitileInput.addEventListener('input', onAdTitleInput);
-  // Задание минимальной цены на аренду в зависимости от типа
-  adTypeSelect.addEventListener('change', onAdTypeChange);
-  adPriceInput.addEventListener('invalid', function () {
-    adPriceInput.style.outline = '2px solid red';
+  adTitle.addEventListener('invalid', onAdTitleInvalid);
+  adTitle.addEventListener('input', onAdTitleInput);
+  adType.addEventListener('change', onAdTypeChange);
+  adPrice.addEventListener('invalid', function () {
+    setInvalidOutline(adPrice);
   });
-  // Валидация времени заезда и выезда
   adTimeIn.addEventListener('change', function () {
     adTimeOut.value = adTimeIn.value;
   });
@@ -140,8 +198,10 @@
   adRoomNumber.addEventListener('change', onRoomNumberChange);
   adCapacity.addEventListener('change', onCapacityChange);
   adCapacity.addEventListener('invalid', function () {
-    adCapacity.style.outline = '2px solid red';
+    setInvalidOutline(adCapacity);
   });
+  avatarChooser.addEventListener('change', onAvatarChooserChange);
+  imagesChooser.addEventListener('change', onImagesChooserChange);
   adForm.addEventListener('submit', onAdFormSubmit);
   adForm.addEventListener('reset', function (evt) {
     evt.preventDefault();
@@ -158,11 +218,11 @@
   function disable() {
     adForm.classList.add('ad-form--disabled');
     window.formsactions.disableForm(adForm);
+    avatarPreview.src = 'img/muffin-grey.svg';
+    removeImages();
   }
 
   window.adform = {
-    adAddress: adAddress,
-    validateRoomsCapacity: validateRoomsCapacity,
     setAddressValue: setAddressValue,
     enable: enable,
     disable: disable

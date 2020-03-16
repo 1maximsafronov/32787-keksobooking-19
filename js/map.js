@@ -109,8 +109,10 @@
 
   function enable() {
     map.classList.remove('map--faded');
-    window.filterform.enable();
-    renderPins(window.data.adverts);
+    if (window.data.adverts.length) {
+      window.filterform.enable();
+      renderPins(window.data.adverts);
+    }
   }
 
   function disable() {

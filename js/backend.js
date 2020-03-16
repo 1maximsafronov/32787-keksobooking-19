@@ -9,6 +9,7 @@
   function load(onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
+    xhr.timeout = TIMEOUT_IN_MS;
 
     xhr.addEventListener('load', function () {
       if (xhr.status === STATUS_CODE_OK) {
@@ -24,8 +25,6 @@
       onError('Ошибка при загрузке объявлени. Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = TIMEOUT_IN_MS;
-
     xhr.open('GET', URL_LOAD);
     xhr.send();
   }
@@ -33,6 +32,7 @@
   function upload(data, onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
+    xhr.timeout = TIMEOUT_IN_MS;
 
     xhr.addEventListener('load', function () {
       if (xhr.status === STATUS_CODE_OK) {
@@ -41,13 +41,9 @@
         onError();
       }
     });
-
     xhr.addEventListener('error', function () {
       onError();
     });
-
-    xhr.timeout = TIMEOUT_IN_MS;
-
     xhr.addEventListener('timeout', function () {
       onError();
     });

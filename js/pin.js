@@ -2,21 +2,19 @@
 
 (function () {
 
-  var MAP_PIN_WIDTH = 50;
-  var MAP_PIN_HEIGHT = 70;
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
 
-  // Шаблон для маркеров
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-  // Функция создания маркера, DOM-элемента на основе объекта
-  function createElement(pin) {
+  // Функция создания маркера
+  function createElement(advert) {
     var pinElement = pinTemplate.cloneNode(true);
-
-    // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
     pinElement.tabIndex = 0;
-    pinElement.style = 'left: ' + (pin.location.x - MAP_PIN_WIDTH / 2) + 'px; top: ' + (pin.location.y - MAP_PIN_HEIGHT) + 'px;';
-    pinElement.querySelector('img').src = pin.author.avatar;
-    pinElement.querySelector('img').alt = pin.offer.title;
+    // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
+    pinElement.style = 'left: ' + (advert.location.x - PIN_WIDTH / 2) + 'px; top: ' + (advert.location.y - PIN_HEIGHT) + 'px;';
+    pinElement.querySelector('img').src = advert.author.avatar;
+    pinElement.querySelector('img').alt = advert.offer.title;
 
     return pinElement;
   }
