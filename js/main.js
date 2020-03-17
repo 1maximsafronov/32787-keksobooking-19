@@ -6,13 +6,13 @@
 
   // Функция активации страницы
   function activatePage() {
-    window.map.enable();
     window.adform.enable();
+    window.map.enable();
   }
   // Функция деактивации старинцы
   function deactivatePage() {
-    window.map.disable();
     window.adform.disable();
+    window.map.disable();
   }
 
   window.main = {
