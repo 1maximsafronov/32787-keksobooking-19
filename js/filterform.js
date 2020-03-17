@@ -1,6 +1,13 @@
 'use strict';
 
 (function () {
+  var PriceType = {
+    ANY: 'any',
+    MIDDLE: 'middle',
+    LOW: 'low',
+    HIGH: 'high'
+  };
+
   var adverts = window.data.adverts;
   var filterForm = document.querySelector('.map__filters');
   var typeFilter = filterForm.querySelector('#housing-type');
@@ -30,26 +37,16 @@
   }
 
   function checkByPrice(advert) {
-    var isPriceMatch = false;
-    if (priceFilter.value === 'any') {
-      return true;
+    var price;
+    if (advert.offer.price < 10000) {
+      price = PriceType.LOW;
+    } else if (advert.offer.price > 50000) {
+      price = PriceType.HIGH;
+    } else {
+      price = PriceType.MIDDLE;
     }
-    if (priceFilter.value === 'middle') {
-      if (advert.offer.price >= 10000 && advert.offer.price <= 50000) {
-        isPriceMatch = true;
-      }
-    }
-    if (priceFilter.value === 'low') {
-      if (advert.offer.price < 10000) {
-        isPriceMatch = true;
-      }
-    }
-    if (priceFilter.value === 'high') {
-      if (advert.offer.price > 50000) {
-        isPriceMatch = true;
-      }
-    }
-    return isPriceMatch;
+
+    return (priceFilter.value === price || priceFilter.value === PriceType.ANY);
   }
 
   function checkByRooms(advert) {
@@ -69,11 +66,13 @@
   function checkByFeatures(advert) {
     var isFeatureMatch = true;
     var featuresCheckbox = featuresFilter.querySelectorAll('input:checked');
+
     featuresCheckbox.forEach(function (feature) {
       if (!advert.offer.features.includes(feature.value)) {
         isFeatureMatch = false;
       }
     });
+
     return isFeatureMatch;
   }
 
