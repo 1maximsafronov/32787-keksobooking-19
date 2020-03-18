@@ -4,12 +4,12 @@
   var mapPins = document.querySelector('.map__pins');
   // Главный маркер на карте
   var mainPin = document.querySelector('.map__pin--main');
-  mainPin.tabIndex = 0;
 
   var MAIN_PIN_WIDTH = mainPin.offsetWidth;
   var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
   var MAIN_PIN_HEIGHT_POINTER = mainPin.offsetHeight + 25;
-
+  var MAX_VERTICAL_POINT = 130;
+  var MIN_VERTICAL_POINT = 630;
   var defaultPinCoords = {
     x: mainPin.offsetLeft,
     y: mainPin.offsetTop
@@ -32,8 +32,8 @@
 
   // Проерка координат главного маркера на выход за пределы карты
   function checkMainPinCoords(coords) {
-    if ((coords.y + MAIN_PIN_HEIGHT_POINTER) >= 130) {
-      if ((coords.y + MAIN_PIN_HEIGHT_POINTER) <= 630) {
+    if ((coords.y + MAIN_PIN_HEIGHT_POINTER) >= MAX_VERTICAL_POINT) {
+      if ((coords.y + MAIN_PIN_HEIGHT_POINTER) <= MIN_VERTICAL_POINT) {
         if ((coords.x + MAIN_PIN_WIDTH / 2) <= mapPins.offsetWidth) {
           if (coords.x >= (0 - MAIN_PIN_WIDTH / 2)) {
             return true;

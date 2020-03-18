@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var formElements = ['select', 'input', 'button', 'fieldset'];
   // Функция отключения элемента формы
   function disableElements(elements) {
     elements.forEach(function (element) {
@@ -15,25 +16,15 @@
   }
   // Функция включения формы
   function enableForm(form) {
-    var selects = form.querySelectorAll('select');
-    var inputs = form.querySelectorAll('input');
-    var buttons = form.querySelectorAll('button');
-    var fieldsets = form.querySelectorAll('fieldset');
-    enableElements(selects);
-    enableElements(inputs);
-    enableElements(buttons);
-    enableElements(fieldsets);
+    formElements.forEach(function (element) {
+      enableElements(form.querySelectorAll(element));
+    });
   }
   // Функция отключения формы
   function disableForm(form) {
-    var selects = form.querySelectorAll('select');
-    var inputs = form.querySelectorAll('input');
-    var buttons = form.querySelectorAll('button');
-    var fieldsets = form.querySelectorAll('fieldset');
-    disableElements(selects);
-    disableElements(inputs);
-    disableElements(buttons);
-    disableElements(fieldsets);
+    formElements.forEach(function (element) {
+      disableElements(form.querySelectorAll(element));
+    });
   }
 
   window.formsactions = {
