@@ -54,8 +54,7 @@
       target.setCustomValidity('');
     }
   }
-
-  function onAdTypeChange() {
+  function validateAdType() {
     var placeholderPrice = {
       'bungalo': 0,
       'flat': 1000,
@@ -64,6 +63,10 @@
     };
     adPrice.placeholder = placeholderPrice[adType.value];
     adPrice.min = placeholderPrice[adType.value];
+  }
+
+  function onAdTypeChange() {
+    validateAdType();
   }
 
   function getErrorCapacity(rooms, capacity) {
@@ -179,9 +182,6 @@
   function onAdFormSubmit(evt) {
     evt.preventDefault();
     window.backend.upload(new FormData(adForm), onFormSuccess, onFormError);
-    clearInvalidOutline(adPrice);
-    clearInvalidOutline(adCapacity);
-    clearInvalidOutline(adTitle);
   }
 
   adTitle.addEventListener('invalid', onAdTitleInvalid);
@@ -211,16 +211,20 @@
 
   function enable() {
     adForm.classList.remove('ad-form--disabled');
-    window.formsactions.enableForm(adForm);
+    window.formsactions.enable(adForm);
     validateRoomsCapacity();
   }
 
   function disable() {
     adForm.classList.add('ad-form--disabled');
-    window.formsactions.disableForm(adForm);
+    window.formsactions.disable(adForm);
     avatarPreview.src = 'img/muffin-grey.svg';
     removeImages();
+    clearInvalidOutline(adPrice);
+    clearInvalidOutline(adCapacity);
+    clearInvalidOutline(adTitle);
     adForm.reset();
+    validateAdType();
   }
 
   window.adform = {

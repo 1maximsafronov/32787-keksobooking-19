@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  var NUMBER_PINS = 5;
+  var PRICE_HIGH = 50000;
+  var PRICE_LOW = 10000;
+  var ANY_VALUE = 'any';
   var PriceType = {
     ANY: 'any',
     MIDDLE: 'middle',
@@ -8,7 +12,6 @@
     HIGH: 'high'
   };
 
-  var adverts = window.data.adverts;
   var filterForm = document.querySelector('.map__filters');
   var typeFilter = filterForm.querySelector('#housing-type');
   var priceFilter = filterForm.querySelector('#housing-price');
@@ -19,28 +22,37 @@
   filterForm.addEventListener('change', window.debounce(filterAdverts));
 
   function filterAdverts() {
+    var adverts = window.data.getAdverts();
     window.map.closeOpenedCard();
-    var filteredAdverts = adverts
-      .filter(checkByType)
-      .filter(checkByPrice)
-      .filter(checkByRooms)
-      .filter(checkByGuests)
-      .filter(checkByFeatures);
+    var filteredAdverts = adverts.filter(checkAdvert);
+    if (filteredAdverts.length > NUMBER_PINS) {
+      filteredAdverts = filteredAdverts.slice(0, NUMBER_PINS);
+    }
     window.map.renderPins(filteredAdverts);
   }
 
-  function checkByType(advert) {
-    if (typeFilter.value === 'any') {
+  function checkAdvert(advert) {
+    var isTypeConform = checkByType(advert);
+    var isPriceConform = checkByPrice(advert);
+    var isRoomsConform = checkByRooms(advert);
+    var isGuestsConform = checkByGuests(advert);
+    var isFeaturesConform = checkByFeatures(advert);
+
+    if (isTypeConform && isPriceConform && isRoomsConform && isGuestsConform && isFeaturesConform) {
       return true;
     }
-    return advert.offer.type === typeFilter.value;
+    return false;
+  }
+
+  function checkByType(advert) {
+    return (advert.offer.type === typeFilter.value || typeFilter.value === ANY_VALUE);
   }
 
   function checkByPrice(advert) {
     var price;
-    if (advert.offer.price < 10000) {
+    if (advert.offer.price < PRICE_LOW) {
       price = PriceType.LOW;
-    } else if (advert.offer.price > 50000) {
+    } else if (advert.offer.price > PRICE_HIGH) {
       price = PriceType.HIGH;
     } else {
       price = PriceType.MIDDLE;
@@ -50,30 +62,23 @@
   }
 
   function checkByRooms(advert) {
-    if (roomsFilter.value === 'any') {
-      return true;
-    }
-    return advert.offer.rooms.toString() === roomsFilter.value;
+    return (advert.offer.rooms.toString() === roomsFilter.value || roomsFilter.value === ANY_VALUE);
   }
 
   function checkByGuests(advert) {
-    if (guestsFilter.value === 'any') {
-      return true;
-    }
-    return advert.offer.guests.toString() === guestsFilter.value;
+    return (advert.offer.guests.toString() === guestsFilter.value || guestsFilter.value === ANY_VALUE);
   }
 
   function checkByFeatures(advert) {
-    var isFeatureMatch = true;
     var featuresCheckbox = featuresFilter.querySelectorAll('input:checked');
 
-    featuresCheckbox.forEach(function (feature) {
-      if (!advert.offer.features.includes(feature.value)) {
-        isFeatureMatch = false;
+    for (var i = 0; i < featuresCheckbox.length; i++) {
+      if (!advert.offer.features.includes(featuresCheckbox[i].value)) {
+        return false;
       }
-    });
+    }
 
-    return isFeatureMatch;
+    return true;
   }
 
   function reset() {
@@ -81,11 +86,11 @@
   }
 
   function enable() {
-    window.formsactions.enableForm(filterForm);
+    window.formsactions.enable(filterForm);
   }
 
   function disable() {
-    window.formsactions.disableForm(filterForm);
+    window.formsactions.disable(filterForm);
   }
 
   window.filterform = {

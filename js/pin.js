@@ -12,7 +12,8 @@
     var pinElement = pinTemplate.cloneNode(true);
     pinElement.tabIndex = 0;
     // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
-    pinElement.style = 'left: ' + (advert.location.x - PIN_WIDTH / 2) + 'px; top: ' + (advert.location.y - PIN_HEIGHT) + 'px;';
+    pinElement.style.left = (advert.location.x - PIN_WIDTH / 2) + 'px';
+    pinElement.style.top = (advert.location.y - PIN_HEIGHT) + 'px';
     pinElement.querySelector('img').src = advert.author.avatar;
     pinElement.querySelector('img').alt = advert.offer.title;
 

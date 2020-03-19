@@ -8,6 +8,7 @@
     data.forEach(function (item, index) {
       adverts[index] = item;
     });
+    window.filterform.enable();
   }
 
   function onError(errorMessage) {
@@ -23,9 +24,16 @@
     setTimeout(hideError, 5000);
   }
 
-  window.backend.load(onSuccess, onError);
+  function load() {
+    window.backend.load(onSuccess, onError);
+  }
+
+  function getAdverts() {
+    return adverts;
+  }
 
   window.data = {
-    adverts: adverts
+    load: load,
+    getAdverts: getAdverts
   };
 })();

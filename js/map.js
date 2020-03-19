@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var NUMBER_PINS = 5;
   // карта маркеров
   var mapPins = document.querySelector('.map__pins');
   // Контейнер куда встявлять карточки
@@ -13,59 +14,53 @@
     if (activePopup) {
       activePopup.classList.add('hidden');
       activePopup.classList.remove('map__card--active');
+      var activePopupClose = activePopup.querySelector('.popup__close');
+      activePopupClose.removeEventListener('click', onCardCloseClick);
+      document.removeEventListener('keydown', onCardEscPress);
     }
     if (activePin) {
       activePin.classList.remove('map__pin--active');
     }
   }
+
+  // Функция открытия карточки
+  function openCardPopup(pin, card) {
+    closeOpenedCard();
+    card.classList.remove('hidden');
+    card.classList.add('map__card--active');
+    pin.classList.add('map__pin--active');
+    var cardClose = card.querySelector('.popup__close');
+    cardClose.addEventListener('click', onCardCloseClick);
+    document.addEventListener('keydown', onCardEscPress);
+  }
+
+  // Функция закрытия карточки при клике на крестик
+  function onCardCloseClick(evt) {
+    evt.preventDefault();
+    closeOpenedCard();
+  }
+
+  // Функция закрытия карточки при нажатии Esc
+  function onCardEscPress(evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      closeOpenedCard();
+    }
+  }
+
   // Функция задания обработчиков событий карточки и метки
   function setClickOnPin(pin, card) {
-    var cardClose = card.querySelector('.popup__close');
-
-    // Функция открытия карточки
-    function openCardPopup() {
-      closeOpenedCard();
-      card.classList.remove('hidden');
-      card.classList.add('map__card--active');
-      pin.classList.add('map__pin--active');
-      cardClose.addEventListener('click', onCardCloseClick);
-      document.addEventListener('keydown', onCardEscPress);
-    }
-
-    // Функция закрытия карточки
-    function closeCardPopup() {
-      card.classList.add('hidden');
-      card.classList.remove('map__card--active');
-      pin.classList.remove('map__pin--active');
-      cardClose.removeEventListener('click', onCardCloseClick);
-      document.removeEventListener('keydown', onCardEscPress);
-    }
-
-    // Функция закрытия карточки при клике на крестик
-    function onCardCloseClick(evt) {
-      evt.preventDefault();
-      closeCardPopup();
-    }
-
-    // Функция закрытия карточки при нажатии Esc
-    function onCardEscPress(evt) {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        closeCardPopup();
-      }
-    }
-
     // Открытие карточки по клику на метке
     pin.addEventListener('click', function (evt) {
       evt.preventDefault();
-      openCardPopup();
+      openCardPopup(pin, card);
     });
 
     // Открытие карточки по клавише Enter на метке
     pin.addEventListener('keydown', function (evt) {
       if (evt.key === 'Enter') {
         evt.preventDefault();
-        openCardPopup();
+        openCardPopup(pin, card);
       }
     });
   }
@@ -75,19 +70,19 @@
     removePinsCards();
     var pinsFragment = document.createDocumentFragment();
     var cardsFragment = document.createDocumentFragment();
-    var counter = 5;
-    if (advertsArr.length < 5) {
-      counter = advertsArr.length;
+    if (advertsArr.length > NUMBER_PINS) {
+      advertsArr = advertsArr.slice(0, NUMBER_PINS);
     }
-    for (var i = 0; i < counter; i++) {
-      if (advertsArr[i].offer) {
-        var pinElement = window.pin.createElement(advertsArr[i]);
-        var cardPopup = window.card.createElement(advertsArr[i]);
+
+    advertsArr.forEach(function (advert) {
+      if (advert.offer) {
+        var pinElement = window.pin.createElement(advert);
+        var cardPopup = window.card.createElement(advert);
         setClickOnPin(pinElement, cardPopup);
         pinsFragment.appendChild(pinElement);
         cardsFragment.appendChild(cardPopup);
       }
-    }
+    });
     // Отрисовка маркеров в контенер на на карту страницы
     mapPins.appendChild(pinsFragment);
     // Отрисовка и добавление карточки объявления
@@ -108,11 +103,12 @@
   }
 
   function enable() {
+    window.data.load();
+    setTimeout(function () {
+      var adverts = window.data.getAdverts();
+      renderPins(adverts);
+    }, 500);
     map.classList.remove('map--faded');
-    if (window.data.adverts.length) {
-      window.filterform.enable();
-      renderPins(window.data.adverts);
-    }
   }
 
   function disable() {
