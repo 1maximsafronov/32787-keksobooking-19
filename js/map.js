@@ -14,8 +14,8 @@
     if (activePopup) {
       activePopup.classList.add('hidden');
       activePopup.classList.remove('map__card--active');
-      var cardClose = activePopup.querySelector('.popup__close');
-      cardClose.removeEventListener('click', onCardCloseClick);
+      var activePopupClose = activePopup.querySelector('.popup__close');
+      activePopupClose.removeEventListener('click', onCardCloseClick);
       document.removeEventListener('keydown', onCardEscPress);
     }
     if (activePin) {

@@ -70,17 +70,15 @@
   }
 
   function checkByFeatures(advert) {
-    var isFeatureMatch = true;
     var featuresCheckbox = featuresFilter.querySelectorAll('input:checked');
 
     for (var i = 0; i < featuresCheckbox.length; i++) {
       if (!advert.offer.features.includes(featuresCheckbox[i].value)) {
-        isFeatureMatch = false;
-        break;
+        return false;
       }
     }
 
-    return isFeatureMatch;
+    return true;
   }
 
   function reset() {
