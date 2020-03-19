@@ -2,33 +2,27 @@
 
 (function () {
   var formElements = ['select', 'input', 'button', 'fieldset'];
-  // Функция отключения элемента формы
-  function disableElements(elements) {
+  // Функция включения/отключения элементов формы
+  function changeElementsStatus(elements, value) {
     elements.forEach(function (element) {
-      element.disabled = true;
-    });
-  }
-  // Функция включения элемента формы
-  function enableElements(elements) {
-    elements.forEach(function (element) {
-      element.disabled = false;
+      element.disabled = value;
     });
   }
   // Функция включения формы
-  function enableForm(form) {
+  function enable(form) {
     formElements.forEach(function (element) {
-      enableElements(form.querySelectorAll(element));
+      changeElementsStatus(form.querySelectorAll(element), false);
     });
   }
   // Функция отключения формы
-  function disableForm(form) {
+  function disable(form) {
     formElements.forEach(function (element) {
-      disableElements(form.querySelectorAll(element));
+      changeElementsStatus(form.querySelectorAll(element), true);
     });
   }
 
   window.formsactions = {
-    disableForm: disableForm,
-    enableForm: enableForm
+    disable: disable,
+    enable: enable
   };
 })();
