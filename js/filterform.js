@@ -23,11 +23,18 @@
 
   function filterAdverts() {
     var adverts = window.data.getAdverts();
+    var filteredAdverts = [];
     window.map.closeOpenedCard();
-    var filteredAdverts = adverts.filter(checkAdvert);
-    if (filteredAdverts.length > NUMBER_PINS) {
-      filteredAdverts = filteredAdverts.slice(0, NUMBER_PINS);
+
+    for (var i = 0; i < adverts.length; i++) {
+      if (checkAdvert(adverts[i])) {
+        filteredAdverts.push(adverts[i]);
+      }
+      if (filteredAdverts.length >= NUMBER_PINS) {
+        break;
+      }
     }
+
     window.map.renderPins(filteredAdverts);
   }
 

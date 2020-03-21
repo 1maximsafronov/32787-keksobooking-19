@@ -8,8 +8,11 @@
   var MAIN_PIN_WIDTH = mainPin.offsetWidth;
   var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
   var MAIN_PIN_HEIGHT_POINTER = mainPin.offsetHeight + 25;
-  var MAX_VERTICAL_POINT = 130;
-  var MIN_VERTICAL_POINT = 630;
+  var MIN_VERTICAL_POINT = 130;
+  var MAX_VERTICAL_POINT = 630;
+  var MAX_HORIZON_POINT = mapPins.offsetWidth;
+  var MIN_HORIZON_POINT = 0;
+
   var defaultPinCoords = {
     x: mainPin.offsetLeft,
     y: mainPin.offsetTop
@@ -32,17 +35,17 @@
 
   // Проерка координат главного маркера на выход за пределы карты
   function checkMainPinCoords(coords) {
-    if ((coords.y + MAIN_PIN_HEIGHT_POINTER) >= MAX_VERTICAL_POINT) {
-      if ((coords.y + MAIN_PIN_HEIGHT_POINTER) <= MIN_VERTICAL_POINT) {
-        if ((coords.x + MAIN_PIN_WIDTH / 2) <= mapPins.offsetWidth) {
-          if (coords.x >= (0 - MAIN_PIN_WIDTH / 2)) {
-            return true;
-          }
-        }
-      }
-    }
+    var yCoord = coords.y + MAIN_PIN_HEIGHT_POINTER;
+    var xCoord = coords.x + MAIN_PIN_WIDTH / 2;
 
-    return false;
+    var isYCoordMatch = (
+      yCoord <= MAX_VERTICAL_POINT && yCoord >= MIN_VERTICAL_POINT
+    );
+    var isXCoordMatch = (
+      xCoord <= MAX_HORIZON_POINT && xCoord >= MIN_HORIZON_POINT
+    );
+
+    return (isYCoordMatch && isXCoordMatch);
   }
 
   function onMainPinMousedown(evt) {
