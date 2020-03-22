@@ -19,17 +19,28 @@
   };
 
   // Обработчики собыитй при первом клике на главный маркер
-  mainPin.addEventListener('mousedown', onMainPinFirstClick);
-  mainPin.addEventListener('keydown', onMainPinFirstClick);
+  mainPin.addEventListener('mousedown', onMainPinFirstMousedown);
+  mainPin.addEventListener('keydown', onMainPinFirstKeydown);
   // Обработчик событий при передвижении главного маркера
   mainPin.addEventListener('mousedown', onMainPinMousedown);
 
-  function onMainPinFirstClick(evt) {
-    if (evt.button === 0 || evt.key === 'Enter') {
+  function activateMainPin() {
+    window.main.activatePage();
+    mainPin.removeEventListener('mousedown', onMainPinFirstMousedown);
+    mainPin.removeEventListener('keydown', onMainPinFirstKeydown);
+  }
+
+  function onMainPinFirstMousedown(evt) {
+    if (evt.button === 0) {
       evt.preventDefault();
-      window.main.activatePage();
-      mainPin.removeEventListener('mousedown', onMainPinFirstClick);
-      mainPin.removeEventListener('keydown', onMainPinFirstClick);
+      activateMainPin();
+    }
+  }
+
+  function onMainPinFirstKeydown(evt) {
+    if (evt.key === 'Enter') {
+      evt.preventDefault();
+      activateMainPin();
     }
   }
 
@@ -95,8 +106,8 @@
     mainPin.style.left = defaultPinCoords.x + 'px';
     mainPin.style.top = defaultPinCoords.y + 'px';
 
-    mainPin.addEventListener('mousedown', onMainPinFirstClick);
-    mainPin.addEventListener('keydown', onMainPinFirstClick);
+    mainPin.addEventListener('mousedown', onMainPinFirstMousedown);
+    mainPin.addEventListener('keydown', onMainPinFirstKeydown);
 
     // Задание адреса в форме объявления при первой загрузке страницы
     window.adform.setAddressValue((defaultPinCoords.x + Math.floor(MAIN_PIN_WIDTH / 2)), (defaultPinCoords.y + Math.floor(MAIN_PIN_HEIGHT / 2)));
