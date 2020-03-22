@@ -104,10 +104,6 @@
 
   function enable() {
     window.data.load();
-    setTimeout(function () {
-      var adverts = window.data.getAdverts();
-      renderPins(adverts);
-    }, 500);
     map.classList.remove('map--faded');
   }
 

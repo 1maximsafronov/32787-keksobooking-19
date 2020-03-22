@@ -8,41 +8,55 @@
   var MAIN_PIN_WIDTH = mainPin.offsetWidth;
   var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
   var MAIN_PIN_HEIGHT_POINTER = mainPin.offsetHeight + 25;
-  var MAX_VERTICAL_POINT = 130;
-  var MIN_VERTICAL_POINT = 630;
+  var MIN_VERTICAL_POINT = 130;
+  var MAX_VERTICAL_POINT = 630;
+  var MAX_HORIZON_POINT = mapPins.offsetWidth;
+  var MIN_HORIZON_POINT = 0;
+
   var defaultPinCoords = {
     x: mainPin.offsetLeft,
     y: mainPin.offsetTop
   };
 
   // Обработчики собыитй при первом клике на главный маркер
-  mainPin.addEventListener('mousedown', onMainPinFirstClick);
-  mainPin.addEventListener('keydown', onMainPinFirstClick);
+  mainPin.addEventListener('mousedown', onMainPinFirstMousedown);
+  mainPin.addEventListener('keydown', onMainPinFirstKeydown);
   // Обработчик событий при передвижении главного маркера
   mainPin.addEventListener('mousedown', onMainPinMousedown);
 
-  function onMainPinFirstClick(evt) {
-    if (evt.button === 0 || evt.key === 'Enter') {
+  function activateMainPin() {
+    window.main.activatePage();
+    mainPin.removeEventListener('mousedown', onMainPinFirstMousedown);
+    mainPin.removeEventListener('keydown', onMainPinFirstKeydown);
+  }
+
+  function onMainPinFirstMousedown(evt) {
+    if (evt.button === 0) {
       evt.preventDefault();
-      window.main.activatePage();
-      mainPin.removeEventListener('mousedown', onMainPinFirstClick);
-      mainPin.removeEventListener('keydown', onMainPinFirstClick);
+      activateMainPin();
+    }
+  }
+
+  function onMainPinFirstKeydown(evt) {
+    if (evt.key === 'Enter') {
+      evt.preventDefault();
+      activateMainPin();
     }
   }
 
   // Проерка координат главного маркера на выход за пределы карты
   function checkMainPinCoords(coords) {
-    if ((coords.y + MAIN_PIN_HEIGHT_POINTER) >= MAX_VERTICAL_POINT) {
-      if ((coords.y + MAIN_PIN_HEIGHT_POINTER) <= MIN_VERTICAL_POINT) {
-        if ((coords.x + MAIN_PIN_WIDTH / 2) <= mapPins.offsetWidth) {
-          if (coords.x >= (0 - MAIN_PIN_WIDTH / 2)) {
-            return true;
-          }
-        }
-      }
-    }
+    var yCoord = coords.y + MAIN_PIN_HEIGHT_POINTER;
+    var xCoord = coords.x + MAIN_PIN_WIDTH / 2;
 
-    return false;
+    var isYCoordMatch = (
+      yCoord <= MAX_VERTICAL_POINT && yCoord >= MIN_VERTICAL_POINT
+    );
+    var isXCoordMatch = (
+      xCoord <= MAX_HORIZON_POINT && xCoord >= MIN_HORIZON_POINT
+    );
+
+    return (isYCoordMatch && isXCoordMatch);
   }
 
   function onMainPinMousedown(evt) {
@@ -92,8 +106,8 @@
     mainPin.style.left = defaultPinCoords.x + 'px';
     mainPin.style.top = defaultPinCoords.y + 'px';
 
-    mainPin.addEventListener('mousedown', onMainPinFirstClick);
-    mainPin.addEventListener('keydown', onMainPinFirstClick);
+    mainPin.addEventListener('mousedown', onMainPinFirstMousedown);
+    mainPin.addEventListener('keydown', onMainPinFirstKeydown);
 
     // Задание адреса в форме объявления при первой загрузке страницы
     window.adform.setAddressValue((defaultPinCoords.x + Math.floor(MAIN_PIN_WIDTH / 2)), (defaultPinCoords.y + Math.floor(MAIN_PIN_HEIGHT / 2)));

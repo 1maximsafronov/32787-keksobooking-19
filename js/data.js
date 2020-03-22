@@ -9,6 +9,7 @@
       adverts[index] = item;
     });
     window.filterform.enable();
+    window.map.renderPins(adverts);
   }
 
   function onError(errorMessage) {

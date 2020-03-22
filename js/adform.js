@@ -144,38 +144,63 @@
   // При успешной отправке формы
   function onFormSuccess() {
     var successMessage = successTemplate.cloneNode(true);
+    document.addEventListener('click', onSuccessMessageClick);
+    document.addEventListener('keydown', onSuccessMessageEscKeydown);
+    document.querySelector('main').appendChild(successMessage);
+    window.main.deactivatePage();
 
-    function onMessageClick(evtMsg) {
-      if (evtMsg.button === 0 || evtMsg.key === 'Escape') {
+    function hideSuccessMessage() {
+      successMessage.remove();
+      document.removeEventListener('click', onSuccessMessageClick);
+      document.removeEventListener('keydown', onSuccessMessageEscKeydown);
+    }
+
+    function onSuccessMessageClick(evtMsg) {
+      evtMsg.preventDefault();
+      hideSuccessMessage();
+    }
+
+    function onSuccessMessageEscKeydown(evtMsg) {
+      if (evtMsg.key === 'Escape') {
         evtMsg.preventDefault();
-        successMessage.remove();
-        document.removeEventListener('click', onMessageClick);
-        document.removeEventListener('keydown', onMessageClick);
+        hideSuccessMessage();
       }
     }
-    document.addEventListener('click', onMessageClick);
-    document.addEventListener('keydown', onMessageClick);
-    document.body.appendChild(successMessage);
-    window.main.deactivatePage();
   }
+
   // При ошибке отправки формы
   function onFormError() {
     var errorMessage = errorTemplate.cloneNode(true);
     var errorButton = errorMessage.querySelector('.error__button');
 
-    function onMessageClick(evtMsg) {
-      if (evtMsg.button === 0 || evtMsg.key === 'Escape') {
+    errorButton.addEventListener('click', onErrorButtonClick);
+    document.addEventListener('click', onErrorMessageClick);
+    document.addEventListener('keydown', onErrorMessageEscKeydown);
+    document.querySelector('main').appendChild(errorMessage);
+
+    function hideErrorMessage() {
+      errorMessage.remove();
+      errorButton.removeEventListener('click', onErrorButtonClick);
+      document.removeEventListener('click', onErrorMessageClick);
+      document.removeEventListener('keydown', onErrorMessageEscKeydown);
+    }
+
+    function onErrorButtonClick(evtMsg) {
+      evtMsg.preventDefault();
+      hideErrorMessage();
+    }
+
+    function onErrorMessageClick(evtMsg) {
+      evtMsg.preventDefault();
+      hideErrorMessage();
+    }
+
+    function onErrorMessageEscKeydown(evtMsg) {
+      if (evtMsg.key === 'Escape') {
         evtMsg.preventDefault();
-        errorMessage.remove();
-        errorButton.removeEventListener('click', onMessageClick);
-        document.removeEventListener('click', onMessageClick);
-        document.removeEventListener('keydown', onMessageClick);
+        hideErrorMessage();
       }
     }
-    errorButton.addEventListener('click', onMessageClick);
-    document.addEventListener('click', onMessageClick);
-    document.addEventListener('keydown', onMessageClick);
-    document.querySelector('main').appendChild(errorMessage);
   }
 
   // Функция при отправке формы объявления
