@@ -19,7 +19,7 @@
       }
     });
     xhr.addEventListener('error', function () {
-      onError('Ошибка при загрузке объявлени. Произошла ошибка соединения');
+      onError('Произошла ошибка соединения при загрузке объявлени. ');
     });
     xhr.addEventListener('timeout', function () {
       onError('Ошибка при загрузке объявлени. Запрос не успел выполниться за ' + xhr.timeout + 'мс');
