@@ -1251,7 +1251,8 @@ fieldset {
 }
 
 .error-data-load {
-  position: absolute;
+  position: fixed;
+  top: 0;
   margin: 0 auto;
   left: 0;
   right: 0;
