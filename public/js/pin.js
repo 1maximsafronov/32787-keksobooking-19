@@ -3,22 +3,43 @@
   const PIN_WIDTH = 50;
   const PIN_HEIGHT = 70;
 
-  const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+  const createPinTemplate = (advert) => {
+    // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
+
+    return (
+      `<button type="button" class="map__pin" style="
+      left: ${(advert.location.x - PIN_WIDTH / 2)}px;
+      top: ${(advert.location.y - PIN_HEIGHT)}px;" tabindex="0">
+        <img src="${advert.author.avatar}" width="40" height="40" draggable="false" alt="${advert.offer.title}">
+      </button>`
+    );
+  };
+
+  const createSomeElement = (template) => {
+    const newElement = document.createElement(`div`);
+    newElement.innerHTML = template;
+
+    return newElement.firstChild;
+  };
+
 
   // Функция создания маркера
   const createElement = (advert) => {
-    const pinElement = pinTemplate.cloneNode(true);
-    pinElement.tabIndex = 0;
-    // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
-    pinElement.style.left = (advert.location.x - PIN_WIDTH / 2) + `px`;
-    pinElement.style.top = (advert.location.y - PIN_HEIGHT) + `px`;
-    pinElement.querySelector(`img`).src = advert.author.avatar;
-    pinElement.querySelector(`img`).alt = advert.offer.title;
-
-    return pinElement;
+    return createSomeElement(createPinTemplate(advert));
   };
 
   window.pin = {
     createElement
   };
+
 })();
+
+/*
+
+ --- Метка объявления--
+
+  <button type="button" class="map__pin" style="left: 200px; top: 400px;">
+    <img src="img/avatars/user07.png" width="40" height="40" draggable="false" alt="Метка объявления">
+  </button>
+
+*/
