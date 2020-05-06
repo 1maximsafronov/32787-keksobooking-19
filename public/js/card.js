@@ -33,13 +33,6 @@
     return tmp;
   };
 
-  const createSomeElement = (template) => {
-    const newElement = document.createElement(`div`);
-    newElement.innerHTML = template;
-
-    return newElement.firstChild;
-  };
-
   const createCardTemplate = (advert) => {
     const hideElement = (condition) => {
       return condition ? `` : `style="display: none;"`;
@@ -82,7 +75,7 @@
 
   // Функция создания карточи объявления
   const createElement = (advert)=> {
-    return createSomeElement(createCardTemplate(advert));
+    return window.utils.createSomeElement(createCardTemplate(advert));
   };
 
   window.card = {

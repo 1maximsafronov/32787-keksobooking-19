@@ -5,7 +5,6 @@
 
   const createPinTemplate = (advert) => {
     // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
-
     return (
       `<button type="button" class="map__pin" style="
       left: ${(advert.location.x - PIN_WIDTH / 2)}px;
@@ -15,17 +14,9 @@
     );
   };
 
-  const createSomeElement = (template) => {
-    const newElement = document.createElement(`div`);
-    newElement.innerHTML = template;
-
-    return newElement.firstChild;
-  };
-
-
   // Функция создания маркера
   const createElement = (advert) => {
-    return createSomeElement(createPinTemplate(advert));
+    return window.utils.createSomeElement(createPinTemplate(advert));
   };
 
   window.pin = {
