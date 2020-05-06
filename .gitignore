@@ -1,7 +1,6 @@
 .DS_Store
 .idea
 *.ai
-*.log
 *.pdf
 *.psd
 *.sublime*
@@ -10,3 +9,12 @@ node_modules/
 npm-debug.log*
 Thumbs.db
 .vscode/
+public/bundle.js
+public/bundle.js.map
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.log*

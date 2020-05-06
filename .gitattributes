@@ -2,3 +2,9 @@
 *.jpg -text
 *.png -text
 *.gif -text
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.woff binary
+*.woff2 binary
