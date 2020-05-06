@@ -23,7 +23,7 @@
   };
 
   // Получаем шаблон списка фотографий объявления
-  const createPhotosListTemplate = (advertPhotos) => {
+  const createListPhotoTemplate = (advertPhotos) => {
     let tmp = ``;
 
     advertPhotos.forEach((item) => {
@@ -56,7 +56,7 @@
           ${advert.offer.address}
         </p>
         <p class="popup__text popup__text--price" ${hideElement(advert.offer.price)}>
-          ${advert.offer.price}5200&#x20bd;<span>/ночь</span>
+          ${advert.offer.price}&#x20bd;<span>/ночь</span>
         </p>
         <h4 class="popup__type" ${hideElement(advert.offer.type)}>
           ${translateOfferType(advert.offer.type)}
@@ -74,7 +74,7 @@
           ${advert.offer.description}.
         </p>
         <div class="popup__photos" ${hideElement(advert.offer.photos.length)}>
-          ${createPhotosListTemplate(advert.offer.photos)}
+          ${createListPhotoTemplate(advert.offer.photos)}
         </div>
       </article>`
     );
