@@ -1,7 +1,5 @@
 (() => {
 
-  const cardTemplate = document.querySelector(`#card`).content.querySelector(`.popup`);
-
   const translateOfferType = (type) => {
     let houseType = {
       'house': `Дом`,
@@ -12,112 +10,113 @@
 
     return houseType[type];
   };
-  // Получаем список особенностей
-  const changeCardFeatures = (cardFeatures, advertFeatures) => {
-    const cardElementFeatures = cardFeatures.querySelectorAll(`.popup__feature`);
-    cardElementFeatures.forEach((item) => {
-      item.style.display = `none`;
-    });
+
+  // Получает шаблон списка особенностей
+  const createFeatureslistTemplate = (advertFeatures) => {
+    let tmp = ``;
+
     advertFeatures.forEach((item) => {
-      cardFeatures.querySelector(`.popup__feature--` + item).style.display = `inline-block`;
-    });
-  };
-  // Получаем набор фотографий объявления
-  const getCardPhotos = (advertPhotos) => {
-    const photoTemplate = cardTemplate.querySelector(`.popup__photos .popup__photo`);
-    let photoElement;
-    const photosFragment = document.createDocumentFragment();
-    advertPhotos.forEach((photo)=> {
-      photoElement = photoTemplate.cloneNode(true);
-      photoElement.src = photo;
-      photosFragment.appendChild(photoElement);
+      tmp += `<li class="popup__feature popup__feature--${item}"></li>`;
     });
 
-    return photosFragment;
+    return tmp;
   };
+
+  // Получаем шаблон списка фотографий объявления
+  const createPhotosListTemplate = (advertPhotos) => {
+    let tmp = ``;
+
+    advertPhotos.forEach((item) => {
+      tmp += `<img src="${item}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`;
+    });
+
+    return tmp;
+  };
+
+  const createSomeElement = (template) => {
+    const newElement = document.createElement(`div`);
+    newElement.innerHTML = template;
+
+    return newElement.firstChild;
+  };
+
+  const createCardTemplate = (advert) => {
+    const hideElement = (condition) => {
+      return condition ? `` : `style="display: none;"`;
+    };
+
+    return (
+      `<article class="map__card popup hidden">
+        <img src="${advert.author.avatar}" ${hideElement(advert.author.avatar)} class="popup__avatar" width="70" height="70" alt="Аватар пользователя">
+        <button type="button" class="popup__close">Закрыть</button>
+        <h3 class="popup__title" ${hideElement(advert.offer.title)}>
+          ${advert.offer.title}
+        </h3>
+        <p class="popup__text popup__text--address" ${hideElement(advert.offer.address)}>
+          ${advert.offer.address}
+        </p>
+        <p class="popup__text popup__text--price" ${hideElement(advert.offer.price)}>
+          ${advert.offer.price}5200&#x20bd;<span>/ночь</span>
+        </p>
+        <h4 class="popup__type" ${hideElement(advert.offer.type)}>
+          ${translateOfferType(advert.offer.type)}
+        </h4>
+        <p class="popup__text popup__text--capacity" ${hideElement(advert.offer.rooms && advert.offer.guests)}>
+          ${advert.offer.rooms} комнаты для ${advert.offer.guests} гостей
+        </p>
+        <p class="popup__text popup__text--time" ${hideElement(advert.offer.checkin && advert.offer.checkout)}>
+          Заезд после ${advert.offer.checkin}, выезд до ${advert.offer.checkout}
+        </p>
+        <ul class="popup__features" ${hideElement(advert.offer.features.length)}>
+          ${createFeatureslistTemplate(advert.offer.features)}
+        </ul>
+        <p class="popup__description" ${hideElement(advert.offer.description)}>
+          ${advert.offer.description}.
+        </p>
+        <div class="popup__photos" ${hideElement(advert.offer.photos.length)}>
+          ${createPhotosListTemplate(advert.offer.photos)}
+        </div>
+      </article>`
+    );
+  };
+
   // Функция создания карточи объявления
   const createElement = (advert)=> {
-    const cardElement = cardTemplate.cloneNode(true);
-    const cardElemetnType = cardElement.querySelector(`.popup__type`);
-    const cardElementTime = cardElement.querySelector(`.popup__text--time`);
-    const cardElementTitle = cardElement.querySelector(`.popup__title`);
-    const cardElementPrice = cardElement.querySelector(`.popup__text--price`);
-    const cardElementPhotos = cardElement.querySelector(`.popup__photos`);
-    const cardElementAvatar = cardElement.querySelector(`.popup__avatar`);
-    const cardElementAddress = cardElement.querySelector(`.popup__text--address`);
-    const cardElementCapacity = cardElement.querySelector(`.popup__text--capacity`);
-    const cardElementFeatures = cardElement.querySelector(`.popup__features`);
-    const cardElementDescription = cardElement.querySelector(`.popup__description`);
-
-    // Заголовок
-    if (advert.offer.title) {
-      cardElementTitle.textContent = advert.offer.title;
-    } else {
-      cardElementTitle.style.display = `none`;
-    }
-    // Адресс
-    if (advert.offer.address) {
-      cardElementAddress.textContent = advert.offer.address;
-    } else {
-      cardElementAddress.style.display = `none`;
-    }
-    // Цена
-    if (advert.offer.price) {
-      cardElementPrice.textContent = advert.offer.price + `₽/ночь`;
-    } else {
-      cardElementPrice.style.display = `none`;
-    }
-    // Тип жилья
-    if (advert.offer.type) {
-      cardElemetnType.textContent = translateOfferType(advert.offer.type);
-    } else {
-      cardElemetnType.style.display = `none`;
-    }
-    // Количество комнат и гостей
-    if (advert.offer.rooms && advert.offer.guests) {
-      cardElementCapacity.textContent = advert.offer.rooms + ` комнаты для ` + advert.offer.guests + ` гостей`;
-    } else {
-      cardElementCapacity.style.display = `none`;
-    }
-    // Время въезда/выезда
-    if (advert.offer.checkin && advert.offer.checkout) {
-      cardElementTime.textContent = `Заезд после ` + advert.offer.checkin + `, выезд до ` + advert.offer.checkout;
-    } else {
-      cardElementTime.style.display = `none`;
-    }
-    // Наличие дополнительных особенностей
-    if (advert.offer.features.length) {
-      changeCardFeatures(cardElementFeatures, advert.offer.features);
-    } else {
-      cardElementFeatures.style.display = `none`;
-    }
-    // Описание объявления
-    if (advert.offer.description) {
-      cardElementDescription.textContent = advert.offer.description;
-    } else {
-      cardElementDescription.style.display = `none`;
-    }
-    // Фотографии объявления
-    while (cardElementPhotos.firstChild) {
-      cardElementPhotos.removeChild(cardElementPhotos.firstChild);
-    }
-    if (advert.offer.photos.length) {
-      cardElementPhotos.appendChild(getCardPhotos(advert.offer.photos));
-    } else {
-      cardElementPhotos.style.display = `none`;
-    }
-    // Аватарка автора
-    if (advert.author.avatar) {
-      cardElementAvatar.src = advert.author.avatar;
-    } else {
-      cardElementAvatar.style.display = `none`;
-    }
-    cardElement.classList.add(`hidden`);
-
-    return cardElement;
+    return createSomeElement(createCardTemplate(advert));
   };
 
   window.card = {
     createElement
   };
+
+
 })();
+
+/*
+
+<!-- Модальное окно с информацией об объявлении -->
+
+  <article class="map__card popup">
+    <img src="img/avatars/user01.png" class="popup__avatar" width="70" height="70" alt="Аватар пользователя">
+    <button type="button" class="popup__close">Закрыть</button>
+    <h3 class="popup__title">Уютное гнездышко для молодоженов</h3>
+    <p class="popup__text popup__text--address">102-0082 Tōkyō-to, Chiyoda-ku, Ichibanchō, 14−3</p>
+    <p class="popup__text popup__text--price">5200&#x20bd;<span>/ночь</span></p>
+    <h4 class="popup__type">Квартира</h4>
+    <p class="popup__text popup__text--capacity">2 комнаты для 3 гостей</p>
+    <p class="popup__text popup__text--time">Заезд после 14:00, выезд до 10:00</p>
+    <ul class="popup__features">
+      <li class="popup__feature popup__feature--wifi"></li>
+      <li class="popup__feature popup__feature--dishwasher"></li>
+      <li class="popup__feature popup__feature--parking"></li>
+      <li class="popup__feature popup__feature--washer"></li>
+      <li class="popup__feature popup__feature--elevator"></li>
+      <li class="popup__feature popup__feature--conditioner"></li>
+    </ul>
+    <p class="popup__description">Великолепная квартира-студия в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью укомплектована и недавно отремонтирована.</p>
+    <div class="popup__photos">
+      <img src="" class="popup__photo" width="45" height="40" alt="Фотография жилья">
+    </div>
+  </article>
+
+*/
