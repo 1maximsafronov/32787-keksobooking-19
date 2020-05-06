@@ -3,21 +3,21 @@
 
   // Функция включения/отключения элементов формы
   const changeElementsStatus = (elements, value) => {
-    elements.forEach(function (element) {
+    elements.forEach((element) => {
       element.disabled = value;
     });
   };
 
   // Функция включения формы
   const enable = (form) => {
-    formElements.forEach(function (element) {
+    formElements.forEach((element) => {
       changeElementsStatus(form.querySelectorAll(element), false);
     });
   };
 
   // Функция отключения формы
   const disable = (form) => {
-    formElements.forEach(function (element) {
+    formElements.forEach((element) => {
       changeElementsStatus(form.querySelectorAll(element), true);
     });
   };

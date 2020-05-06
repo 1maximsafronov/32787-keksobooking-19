@@ -1,5 +1,5 @@
 (() => {
-  const URL_LOAD = `https://javascript.pages.academy/keksobooking/data`;
+  const URL_LOAD = `https://javascript.pages.academy/keksobooking/data1`;
   //   const URL_LOAD = `https://js.dump.academy/keksobooking/data`;
   const URL_UPLOAD = `https://javascript.pages.academy/keksobooking`;
   //  const URL_UPLOAD = `https://js.dump.academy/keksobooking`;
