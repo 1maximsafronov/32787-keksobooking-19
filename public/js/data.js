@@ -19,7 +19,7 @@
     const node = document.createElement(`div`);
     node.classList.add(`error-data-load`);
     node.textContent = errorMessage + ` Мы сгенерировали случайные объявления`;
-    document.body.appendChild(node);
+    window.utils.render(document.body, node, window.utils.RenderPosition.BEFOREEND);
 
     filData(randomdata);
 
