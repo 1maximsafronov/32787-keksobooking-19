@@ -17,8 +17,22 @@
   const adImagesContainer = adForm.querySelector(`.ad-form__photo`);
   adAddress.tabIndex = -1;
 
-  const successTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
-  const errorTemplate = document.querySelector(`#error`).content.querySelector(`.error`);
+  const createSuccessTemplate = () => {
+    return (
+      `<div class="success">
+        <p class="success__message">Ваше объявление<br>успешно размещено!</p>
+      </div>`
+    );
+  };
+
+  const createErrorTemplate = () => {
+    return (
+      `<div class="error">
+        <p class="error__message">Ошибка загрузки объявления</p>
+        <button class="error__button">Попробовать снова</button>
+      </div>`
+    );
+  };
 
   // Функция задания значения поля адреса
   const setAddressValue = (x, y) => {
@@ -77,7 +91,8 @@
 
   // При успешной отправке формы
   const onFormSuccess = () => {
-    const successMessage = successTemplate.cloneNode(true);
+    const successMessage = window.utils.createSomeElement(createSuccessTemplate());
+
     const hideSuccessMessage = () => {
       successMessage.remove();
       document.removeEventListener(`click`, onSuccessMessageClick);
@@ -95,6 +110,7 @@
         hideSuccessMessage();
       }
     };
+
     document.addEventListener(`click`, onSuccessMessageClick);
     document.addEventListener(`keydown`, onSuccessMessageEscKeydown);
     document.querySelector(`main`).appendChild(successMessage);
@@ -105,7 +121,7 @@
 
   // При ошибке отправки формы
   const onFormError = () => {
-    const errorMessage = errorTemplate.cloneNode(true);
+    const errorMessage = window.utils.createSomeElement(createErrorTemplate());
     const errorButton = errorMessage.querySelector(`.error__button`);
 
 
