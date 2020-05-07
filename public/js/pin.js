@@ -2,14 +2,20 @@
 
   const PIN_WIDTH = 50;
   const PIN_HEIGHT = 70;
+  const PIN_HALF_WIDTH = PIN_WIDTH / 2;
 
   const createPinTemplate = (advert) => {
     // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
+    let pinLeftPossition = advert.location.x - PIN_HALF_WIDTH;
+    let pinTopPosition = advert.location.y - PIN_HEIGHT;
+    let imgUrl = advert.author.avatar;
+    let imgAltText = advert.offer.title;
+
     return (
       `<button type="button" class="map__pin" style="
-      left: ${(advert.location.x - PIN_WIDTH / 2)}px;
-      top: ${(advert.location.y - PIN_HEIGHT)}px;" tabindex="0">
-        <img src="${advert.author.avatar}" width="40" height="40" draggable="false" alt="${advert.offer.title}">
+      left: ${pinLeftPossition}px;
+      top: ${pinTopPosition}px;" tabindex="0">
+        <img src="${imgUrl}" width="40" height="40" draggable="false" alt="${imgAltText}">
       </button>`
     );
   };
