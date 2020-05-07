@@ -52,6 +52,7 @@
       target.setCustomValidity(``);
     }
   };
+
   const validateAdType = () => {
     let placeholderPrice = {
       'bungalo': 0,
@@ -142,11 +143,6 @@
   // При успешной отправке формы
   const onFormSuccess = () => {
     const successMessage = successTemplate.cloneNode(true);
-    document.addEventListener(`click`, onSuccessMessageClick);
-    document.addEventListener(`keydown`, onSuccessMessageEscKeydown);
-    document.querySelector(`main`).appendChild(successMessage);
-    window.main.deactivatePage();
-
     const hideSuccessMessage = () => {
       successMessage.remove();
       document.removeEventListener(`click`, onSuccessMessageClick);
@@ -164,6 +160,12 @@
         hideSuccessMessage();
       }
     };
+    document.addEventListener(`click`, onSuccessMessageClick);
+    document.addEventListener(`keydown`, onSuccessMessageEscKeydown);
+    document.querySelector(`main`).appendChild(successMessage);
+    // window.main.deactivatePage();
+    disable();
+    window.map.disable();
   };
 
   // При ошибке отправки формы
@@ -228,20 +230,24 @@
   avatarChooser.addEventListener(`change`, onAvatarChooserChange);
   imagesChooser.addEventListener(`change`, onImagesChooserChange);
   adForm.addEventListener(`submit`, onAdFormSubmit);
+
   adResetButton.addEventListener(`click`, (evt) => {
     evt.preventDefault();
-    window.main.deactivatePage();
+    // window.main.deactivatePage();
+    disable();
+    window.map.disable();
   });
+
 
   const enable = () => {
     adForm.classList.remove(`ad-form--disabled`);
-    window.formsactions.enable(adForm);
+    window.utils.enableForm(adForm);
     validateRoomsCapacity();
   };
 
   const disable = () => {
     adForm.classList.add(`ad-form--disabled`);
-    window.formsactions.disable(adForm);
+    window.utils.disableForm(adForm);
     avatarPreview.src = `img/muffin-grey.svg`;
     removeImages();
     clearInvalidOutline(adPrice);

@@ -11,6 +11,8 @@
   const MAX_VERTICAL_POINT = 630;
   const MAX_HORIZON_POINT = mapPins.offsetWidth;
   const MIN_HORIZON_POINT = 0;
+  const MOUS_LEFT_BUTTON_KEYCODE = 0;
+
 
   let defaultPinCoords = {
     x: mainPin.offsetLeft,
@@ -18,13 +20,15 @@
   };
 
   const activateMainPin = () => {
-    window.main.activatePage();
+    // window.main.activatePage();
+    window.adform.enable();
+    window.map.enable();
     mainPin.removeEventListener(`mousedown`, onMainPinFirstMousedown);
     mainPin.removeEventListener(`keydown`, onMainPinFirstKeydown);
   };
 
   const onMainPinFirstMousedown = (evt) => {
-    if (evt.button === 0) {
+    if (evt.button === MOUS_LEFT_BUTTON_KEYCODE) {
       evt.preventDefault();
       activateMainPin();
     }
@@ -89,7 +93,7 @@
       document.removeEventListener(`mouseup`, onMainPinMouseUp);
 
     };
-    if (evt.button === 0) {
+    if (evt.button === MOUS_LEFT_BUTTON_KEYCODE) {
       document.addEventListener(`mousemove`, onMainPinMove);
       document.addEventListener(`mouseup`, onMainPinMouseUp);
     }

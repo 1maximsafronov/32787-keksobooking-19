@@ -1,5 +1,5 @@
 (() => {
-  const URL_LOAD = `https://javascript.pages.academy/keksobooking/data1`;
+  const URL_LOAD = `https://javascript.pages.academy/keksobooking/data`;
   //   const URL_LOAD = `https://js.dump.academy/keksobooking/data`;
   const URL_UPLOAD = `https://javascript.pages.academy/keksobooking`;
   //  const URL_UPLOAD = `https://js.dump.academy/keksobooking`;
@@ -29,14 +29,14 @@
     xhr.send();
   };
 
-  const upload = (data, onLoad, onError) => {
+  const upload = (data, onSuccess, onError) => {
     let xhr = new XMLHttpRequest();
     xhr.responseType = `json`;
     xhr.timeout = TIMEOUT_IN_MS;
 
     xhr.addEventListener(`load`, () => {
       if (xhr.status === STATUS_CODE_OK) {
-        onLoad(xhr.response);
+        onSuccess(xhr.response);
       } else {
         onError();
       }

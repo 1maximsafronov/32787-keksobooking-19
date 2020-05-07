@@ -1,5 +1,4 @@
 (() => {
-
   const translateOfferType = (type) => {
     let houseType = {
       'house': `Дом`,
@@ -73,16 +72,48 @@
     );
   };
 
-  // Функция создания карточи объявления
-  const createElement = (advert)=> {
-    return window.utils.createSomeElement(createCardTemplate(advert));
-  };
+  class Card {
+    constructor(advert) {
+      this._advert = advert;
+      this._element = null;
+      this._closeBtn = null;
+    }
 
-  window.card = {
-    createElement
-  };
+    getTemplate() {
+      return createCardTemplate(this._advert);
+    }
 
+    getElement() {
+      if (!this._element) {
+        this._element = window.utils.createSomeElement(this.getTemplate());
+        this._closeBtn = this._element.querySelector(`.popup__close`);
+      }
 
+      return this._element;
+    }
+
+    getCloseBtn() {
+      if (!this._closeBtn) {
+
+        this._closeBtn = this.getElement().querySelector(`.popup__close`);
+      }
+      return this._closeBtn;
+    }
+    removeElement() {
+      this._element = null;
+      this._closeBtn = null;
+    }
+
+    show() {
+      this._element.classList.remove(`hidden`);
+    }
+
+    hide() {
+      this._element.classList.add(`hidden`);
+    }
+  }
+
+  window.Card = Card;
 })();
 
 /*

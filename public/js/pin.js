@@ -20,15 +20,38 @@
     );
   };
 
-  // Функция создания маркера
-  const createElement = (advert) => {
-    return window.utils.createSomeElement(createPinTemplate(advert));
-  };
+  class Pin {
+    constructor(advert) {
+      this._advert = advert;
+      this._element = null;
+    }
 
-  window.pin = {
-    createElement
-  };
+    getTemplate() {
+      return createPinTemplate(this._advert);
+    }
 
+    getElement() {
+      if (!this._element) {
+        this._element = window.utils.createSomeElement(this.getTemplate());
+      }
+
+      return this._element;
+    }
+
+    removeElement() {
+      this._element = null;
+    }
+    //
+    // select(){
+    //
+    // }
+    //
+    // deselect(){
+    //
+    // }
+  }
+
+  window.Pin = Pin;
 })();
 
 /*

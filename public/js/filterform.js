@@ -71,7 +71,7 @@
   const filterAdverts = () => {
     let adverts = window.data.getAdverts();
     let filteredAdverts = [];
-    window.map.closeOpenedCard();
+    // window.map.closeOpenedCard();
 
     for (let i = 0; i < adverts.length; i++) {
       if (checkAdvert(adverts[i])) {
@@ -90,15 +90,15 @@
   };
 
   const enable = ()=> {
-    window.formsactions.enable(filterForm);
+    window.utils.enableForm(filterForm);
   };
 
   const disable = ()=> {
-    window.formsactions.disable(filterForm);
+    window.utils.disableForm(filterForm);
   };
 
 
-  filterForm.addEventListener(`change`, window.debounce(filterAdverts));
+  filterForm.addEventListener(`change`, window.utils.debounce(filterAdverts));
 
   window.filterform = {
     reset,
