@@ -1,4 +1,11 @@
 (() => {
+  const RenderPosition = {
+    AFTERBEGIN: `afterbegin`,
+    BEFOREEND: `beforeend`,
+    BEFORE: `before`,
+    AFTER: `after`
+  };
+
   const TIME_DELAY = 500;
 
   const createSomeElement = (template) => {
@@ -46,10 +53,29 @@
     });
   };
 
+  const render = (container, element, place) => {
+    switch (place) {
+      case RenderPosition.AFTERBEGIN:
+        container.prepend(element);
+        break;
+      case RenderPosition.BEFOREEND:
+        container.append(element);
+        break;
+      case RenderPosition.BEFORE:
+        container.before(element);
+        break;
+      case RenderPosition.AFTER:
+        container.after(element);
+        break;
+    }
+  };
+
   window.utils = {
     createSomeElement,
     debounce,
     enableForm,
-    disableForm
+    disableForm,
+    render,
+    RenderPosition
   };
 })();

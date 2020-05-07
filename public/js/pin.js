@@ -12,9 +12,7 @@
     let imgAltText = advert.offer.title;
 
     return (
-      `<button type="button" class="map__pin" style="
-      left: ${pinLeftPossition}px;
-      top: ${pinTopPosition}px;" tabindex="0">
+      `<button type="button" class="map__pin" style="left: ${pinLeftPossition}px; top: ${pinTopPosition}px;" tabindex="0">
         <img src="${imgUrl}" width="40" height="40" draggable="false" alt="${imgAltText}">
       </button>`
     );

@@ -111,16 +111,14 @@
         pinElement.getElement().addEventListener(`click`, onPinClick);
         const cartCloseBtn = cardPopup.getCloseBtn();
 
-        cardsFragment.appendChild(cardPopup.getElement());
-        pinsFragment.appendChild(pinElement.getElement());
-
-
+        window.utils.render(cardsFragment, cardPopup.getElement(), window.utils.RenderPosition.BEFOREEND);
+        window.utils.render(pinsFragment, pinElement.getElement(), window.utils.RenderPosition.BEFOREEND);
       }
     });
     // Отрисовка маркеров в контенер на на карту страницы
-    mapPins.appendChild(pinsFragment);
+    window.utils.render(mapPins, pinsFragment, window.utils.RenderPosition.BEFOREEND);
     // Отрисовка и добавление карточки объявления
-    map.insertBefore(cardsFragment, map.querySelector(`.map__filters-container`));
+    window.utils.render(map.querySelector(`.map__filters-container`), cardsFragment, window.utils.RenderPosition.BEFORE);
   };
 
   const removePinsCards = () => {
