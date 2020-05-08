@@ -1,5 +1,6 @@
 import {createSomeElement} from "../utils.js";
 
+let openedCard = null;
 const translateOfferType = (type) => {
   let houseType = {
     'house': `Дом`,
@@ -77,7 +78,6 @@ export default class Card {
   constructor(advert) {
     this._advert = advert;
     this._element = null;
-    this._closeBtn = null;
     this._isShown = false;
   }
 
@@ -88,49 +88,40 @@ export default class Card {
   getElement() {
     if (!this._element) {
       this._element = createSomeElement(this.getTemplate());
-      this._closeBtn = this._element.querySelector(`.popup__close`);
     }
 
     return this._element;
   }
 
   removeElement() {
-    this._element.remove();
     this._element = null;
-    this._closeBtn = null;
   }
 
-  getCloseBtn() {
-    if (!this._closeBtn) {
-
-      this._closeBtn = this.getElement().querySelector(`.popup__close`);
-    }
-    return this._closeBtn;
+  setClickCloseBtnHandler(handler) {
+    this.getElement().querySelector(`.popup__close`).addEventListener(`click`, handler);
   }
 
-  onCloseBtnClick(cb) {
-    this.getCloseBtn().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      this.hide();
-      cb();
-    });
-  }
   show() {
     this._isShown = true;
-    this._element.classList.remove(`hidden`);
+    this.getElement().classList.remove(`hidden`);
   }
 
   hide() {
     this._isShown = false;
-    this._element.classList.add(`hidden`);
+    this.getElement().classList.add(`hidden`);
   }
 
-  static hideOpened(cards) {
-    for (let card of cards) {
-      if (card._isShown) {
-        card.hide();
-      }
+  static saveOpenedCard(card) {
+    if (openedCard !== card) {
+      openedCard = card;
     }
+  }
+
+  static hideOpenedCard() {
+    if (openedCard !== null) {
+      openedCard.hide();
+    }
+    openedCard = null;
   }
 }
 

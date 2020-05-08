@@ -1,31 +1,14 @@
 import MapComponent from "./components/map.js";
+import {generateAdverts} from "./randomdata.js";
+// import {getAdverts, loadData} from "./data.js";
+
+const TOTAL_NUMBER_ADVERTS = 8;
 
 const mapOnPage = document.querySelector(`.map`);
 
-const map = new MapComponent(mapOnPage);
+// loadData();
+// let adverts = getAdverts();
+let adverts = generateAdverts(TOTAL_NUMBER_ADVERTS);
 
+const map = new MapComponent(mapOnPage, adverts);
 map.disable();
-
-// ------ СТАРЫЙ КОД ---------
-//
-// window.adform.disable();
-// window.map.disable();
-
-// // Функция активации страницы
-// const activatePage = () =>{
-//   window.adform.enable();
-//   window.map.enable();
-// };
-// // Функция деактивации старинцы
-// const deactivatePage = () =>{
-//   window.adform.disable();
-//   window.map.disable();
-// };
-//
-// // Неактивное состояние странице на загрузке
-// deactivatePage();
-
-// window.main = {
-//   activatePage,
-//   deactivatePage
-// };

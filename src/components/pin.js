@@ -3,6 +3,7 @@ import {createSomeElement} from "../utils.js";
 const PIN_WIDTH = 50;
 const PIN_HEIGHT = 70;
 const PIN_HALF_WIDTH = PIN_WIDTH / 2;
+let selectedPin = null;
 
 const createPinTemplate = (advert) => {
   // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
@@ -38,33 +39,34 @@ export default class Pin {
   }
 
   removeElement() {
-    this._element.remove();
     this._element = null;
   }
-
-  onClick(cb) {
-    this.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      cb();
-      this.select();
-    });
+  //
+  setClickHandler(handler) {
+    this.getElement().addEventListener(`click`, handler);
   }
   //
   select() {
     this._isSelected = true;
-    this._element.classList.add(`map__pin--active`);
+    this.getElement().classList.add(`map__pin--active`);
   }
   //
   deselect() {
     this._isSelected = false;
-    this._element.classList.remove(`map__pin--active`);
+    this.getElement().classList.remove(`map__pin--active`);
   }
-  static deselectAll(pins) {
-    for (let pin of pins) {
-      if (pin._isSelected) {
-        pin.deselect();
-      }
+
+  static saveSelectedPin(pin) {
+    if (selectedPin !== pin) {
+      selectedPin = pin;
     }
+  }
+
+  static removeSelectedPin() {
+    if (selectedPin !== null) {
+      selectedPin.deselect();
+    }
+    selectedPin = null;
   }
 }
 
