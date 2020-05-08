@@ -1,9 +1,12 @@
 (() => {
   const NUMBER_PINS = 5;
-  // карта маркеров
-  const mapPins = document.querySelector(`.map__pins`);
   // Контейнер куда встявлять карточки
   const map = document.querySelector(`.map`);
+  // карта маркеров
+  const mapPins = map.querySelector(`.map__pins`);
+
+  let pinColectiron = new Set();
+  let cardColection = new Set();
 
   // const closeOpenedCard = () => {
   //   // Проверка и закрытие других открытых карточек при открытии новой
@@ -69,24 +72,29 @@
     removePinsCards();
     const pinsFragment = document.createDocumentFragment();
     const cardsFragment = document.createDocumentFragment();
+
     if (advertsArr.length > NUMBER_PINS) {
       advertsArr = advertsArr.slice(0, NUMBER_PINS);
     }
 
     advertsArr.forEach((advert) => {
       if (advert.offer) {
-        let pinElement = new window.Pin(advert);
-        let cardPopup = new window.Card(advert);
+        const pin = new window.PinComponent(advert);
+        const card = new window.CardComponent(advert);
+        pinColectiron.add(pin);
+        cardColection.add(card);
 
         const hideCard = () => {
-          cardPopup.hide();
-          cartCloseBtn.removeEventListener(`click`, onCardCloseBtnClick);
+          pin.deselect();
+          card.hide();
+
           document.removeEventListener(`keydown`, onEscPress);
         };
 
         const showCard = () => {
-          cardPopup.show();
-          cartCloseBtn.addEventListener(`click`, onCardCloseBtnClick);
+          window.PinComponent.deselectAll(pinColectiron);
+          window.CardComponent.hideOpened(cardColection);
+          card.show();
           document.addEventListener(`keydown`, onEscPress);
         };
 
@@ -97,24 +105,16 @@
           }
         };
 
-        const onPinClick = (evt) => {
-          evt.preventDefault();
-          showCard();
-        };
+        pin.onClick(showCard);
+        card.onCloseBtnClick(hideCard);
 
-        const onCardCloseBtnClick = (evt) => {
-          evt.preventDefault();
-          hideCard();
-        };
+        // setClickOnPin(pin.getElement(), card.getElement());
 
-        // setClickOnPin(pinElement.getElement(), cardPopup.getElement());
-        pinElement.getElement().addEventListener(`click`, onPinClick);
-        const cartCloseBtn = cardPopup.getCloseBtn();
-
-        window.utils.render(cardsFragment, cardPopup.getElement(), window.utils.RenderPosition.BEFOREEND);
-        window.utils.render(pinsFragment, pinElement.getElement(), window.utils.RenderPosition.BEFOREEND);
+        window.utils.render(cardsFragment, card.getElement(), window.utils.RenderPosition.BEFOREEND);
+        window.utils.render(pinsFragment, pin.getElement(), window.utils.RenderPosition.BEFOREEND);
       }
     });
+
     // Отрисовка маркеров в контенер на на карту страницы
     window.utils.render(mapPins, pinsFragment, window.utils.RenderPosition.BEFOREEND);
     // Отрисовка и добавление карточки объявления

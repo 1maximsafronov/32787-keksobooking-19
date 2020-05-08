@@ -1,119 +1,235 @@
-'use strict';
 
-(function () {
-  var mapPins = document.querySelector('.map__pins');
-  // Главный маркер на карте
-  var mainPin = document.querySelector('.map__pin--main');
+// const MOUS_LEFT_BUTTON_KEYCODE = 0;
+// // const mapPins = document.querySelector(`.map__pins`);
+// // Главный маркер на карте
+// // const mainPin = document.querySelector(`.map__pin--main`);
+//
+// const MAIN_PIN_WIDTH = mainPin.offsetWidth;
+// // const MAIN_PIN_HEIGHT = mainPin.offsetHeight;
+// const MAIN_PIN_HEIGHT_POINTER = mainPin.offsetHeight + 25;
+// const MIN_VERTICAL_POINT = 130;
+// const MAX_VERTICAL_POINT = 630;
+// const MIN_HORIZON_POINT = 0;
+// const MAX_HORIZON_POINT = mapPins.offsetWidth;
 
-  var MAIN_PIN_WIDTH = mainPin.offsetWidth;
-  var MAIN_PIN_HEIGHT = mainPin.offsetHeight;
-  var MAIN_PIN_HEIGHT_POINTER = mainPin.offsetHeight + 25;
-  var MIN_VERTICAL_POINT = 130;
-  var MAX_VERTICAL_POINT = 630;
-  var MAX_HORIZON_POINT = mapPins.offsetWidth;
-  var MIN_HORIZON_POINT = 0;
 
-  var defaultPinCoords = {
-    x: mainPin.offsetLeft,
-    y: mainPin.offsetTop
-  };
+// Проерка координат главного маркера на выход за пределы карты
+// const checkMainPinCoords = (coords) =>{
+//   let yCoord = coords.y + MAIN_PIN_HEIGHT_POINTER;
+//   let xCoord = coords.x + MAIN_PIN_WIDTH / 2;
+//
+//   let isYCoordMatch = (
+//     yCoord <= MAX_VERTICAL_POINT && yCoord >= MIN_VERTICAL_POINT
+//   );
+//   let isXCoordMatch = (
+//     xCoord <= MAX_HORIZON_POINT && xCoord >= MIN_HORIZON_POINT
+//   );
+//
+//   return (isYCoordMatch && isXCoordMatch);
+// }; // --- checkMainPinCoords(coords) --- end
 
-  // Обработчики собыитй при первом клике на главный маркер
-  mainPin.addEventListener('mousedown', onMainPinFirstMousedown);
-  mainPin.addEventListener('keydown', onMainPinFirstKeydown);
-  // Обработчик событий при передвижении главного маркера
-  mainPin.addEventListener('mousedown', onMainPinMousedown);
 
-  function activateMainPin() {
-    window.main.activatePage();
-    mainPin.removeEventListener('mousedown', onMainPinFirstMousedown);
-    mainPin.removeEventListener('keydown', onMainPinFirstKeydown);
-  }
+// let defaultPinCoords = {
+//   x: mainPin.offsetLeft,
+//   y: mainPin.offsetTop
+// };
 
-  function onMainPinFirstMousedown(evt) {
-    if (evt.button === 0) {
-      evt.preventDefault();
-      activateMainPin();
-    }
-  }
+// const activateMainPin = () => {
+//   // window.main.activatePage();
+//
+//   // window.adform.enable();
+//   window.map.enable();
+//   mainPin.removeEventListener(`mousedown`, onMainPinFirstMousedown);
+//   mainPin.removeEventListener(`keydown`, onMainPinFirstKeydown);
+// };
 
-  function onMainPinFirstKeydown(evt) {
-    if (evt.key === 'Enter') {
-      evt.preventDefault();
-      activateMainPin();
-    }
-  }
+// Функция при первом нажатии на главный маркер
+// const onMainPinFirstMousedown = (evt) => {
+//   if (evt.button === MOUS_LEFT_BUTTON_KEYCODE) {
+//     evt.preventDefault();
+//     activateMainPin();
+//   }
+// };
+//
+// const onMainPinFirstKeydown = (evt) => {
+//   if (evt.key === `Enter`) {
+//     evt.preventDefault();
+//     activateMainPin();
+//   }
+// };
 
-  // Проерка координат главного маркера на выход за пределы карты
-  function checkMainPinCoords(coords) {
-    var yCoord = coords.y + MAIN_PIN_HEIGHT_POINTER;
-    var xCoord = coords.x + MAIN_PIN_WIDTH / 2;
 
-    var isYCoordMatch = (
-      yCoord <= MAX_VERTICAL_POINT && yCoord >= MIN_VERTICAL_POINT
-    );
-    var isXCoordMatch = (
-      xCoord <= MAX_HORIZON_POINT && xCoord >= MIN_HORIZON_POINT
-    );
+// const onMainPinMousedown = (evt) =>{
+//   evt.preventDefault();
+//
+//   let startCoords = {
+//     x: evt.clientX,
+//     y: evt.clientY
+//   };
+//
+//   // Функция передвижения главного маркера
+//   const onMainPinMove = (moveEvt) =>{
+//     moveEvt.preventDefault();
+//
+//     let newPincoords = {
+//       x: mainPin.offsetLeft - (startCoords.x - moveEvt.clientX),
+//       y: mainPin.offsetTop - (startCoords.y - moveEvt.clientY)
+//     };
+//
+//     startCoords.x = moveEvt.clientX;
+//     startCoords.y = moveEvt.clientY;
+//
+//     if (checkMainPinCoords(newPincoords)) {
+//       mainPin.style.left = newPincoords.x + `px`;
+//       mainPin.style.top = newPincoords.y + `px`;
+//
+//       // Задание адреса в форме объявления при активации страницы
+//       // window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
+//     }
+//   }; // --- onMainPinMove(moveEvt) --- end
+//
+//   // Функция при отпускании мыши на главном маркере
+//   const onMainPinMouseUp = (upEvt) =>{
+//     upEvt.preventDefault();
+//
+//     // Задание адреса в форме объявления при активации страницы
+//     // window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
+//     document.removeEventListener(`mousemove`, onMainPinMove);
+//     document.removeEventListener(`mouseup`, onMainPinMouseUp);
+//   }; // --- onMainPinMouseUp(upEvt) --- end
+//
+//   if (evt.button === MOUS_LEFT_BUTTON_KEYCODE) {
+//     document.addEventListener(`mousemove`, onMainPinMove);
+//     document.addEventListener(`mouseup`, onMainPinMouseUp);
+//   }
+// }; // --- onMainPinMousedown(evt) --- end
 
-    return (isYCoordMatch && isXCoordMatch);
-  }
+// Функция сброса положения главного маркера
+// const reset = () => {
+//   // mainPin.style.left = defaultPinCoords.x + `px`;
+//   // mainPin.style.top = defaultPinCoords.y + `px`;
+//
+//   mainPin.addEventListener(`mousedown`, onMainPinFirstMousedown);
+//   mainPin.addEventListener(`keydown`, onMainPinFirstKeydown);
+//
+//   // Задание адреса в форме объявления при первой загрузке страницы
+//   // window.adform.setAddressValue((defaultPinCoords.x + Math.floor(MAIN_PIN_WIDTH / 2)), (defaultPinCoords.y + Math.floor(MAIN_PIN_HEIGHT / 2)));
+// }; // --- reset() --- end
 
-  function onMainPinMousedown(evt) {
-    evt.preventDefault();
+// Обработчики собыитй при первом клике на главный маркер
+// mainPin.addEventListener(`mousedown`, onMainPinFirstMousedown);
+// mainPin.addEventListener(`keydown`, onMainPinFirstKeydown);
 
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
+// Обработчик событий при передвижении главного маркера
+// mainPin.addEventListener(`mousedown`, onMainPinMousedown);
+
+// window.mainpin = {
+//   reset
+// };
+
+//
+//
+//
+//
+//
+//  ------- НОВЫЙ КОД ----------
+
+const MOUS_LEFT_BUTTON_KEYCODE = 0;
+const MIN_VERTICAL_POINT = 130;
+const MAX_VERTICAL_POINT = 630;
+const MIN_HORIZON_POINT = 0;
+const MAX_HORIZON_POINT = 1200;
+const MAIN_PIN_WIDTH = 65;
+const MAIN_PIN_HEIGHT = 65;
+const MAIN_PIN_HEIGHT_POINTER = MAIN_PIN_HEIGHT + 25;
+
+// Проерка координат главного маркера на выход за пределы карты
+const checkMainPinCoords = (coords) =>{
+  let yCoord = coords.y + MAIN_PIN_HEIGHT_POINTER;
+  let xCoord = coords.x + MAIN_PIN_WIDTH / 2;
+
+  let isYCoordMatch = (
+    yCoord <= MAX_VERTICAL_POINT && yCoord >= MIN_VERTICAL_POINT
+  );
+  let isXCoordMatch = (
+    xCoord <= MAX_HORIZON_POINT && xCoord >= MIN_HORIZON_POINT
+  );
+
+  return (isYCoordMatch && isXCoordMatch);
+}; // --- checkMainPinCoords(coords) --- end
+
+// ---- Задание класса главного маркера
+export default class MainPin {
+  constructor(mainPinElement) {
+    this._element = mainPinElement;
+
+    this._defaultPinCoords = {
+      x: this._element.offsetLeft,
+      y: this._element.offsetTop
     };
 
-    function onMainPinMove(moveEvt) {
-      moveEvt.preventDefault();
+    this.coords = {
+      x: this._defaultPinCoords.x,
+      y: this._defaultPinCoords.y
+    };
 
-      var newPincoords = {
-        x: mainPin.offsetLeft - (startCoords.x - moveEvt.clientX),
-        y: mainPin.offsetTop - (startCoords.y - moveEvt.clientY)
+    const onMainPinMousedown = (evt) =>{
+      evt.preventDefault();
+
+      let startCoords = {
+        x: evt.clientX,
+        y: evt.clientY
       };
 
-      startCoords.x = moveEvt.clientX;
-      startCoords.y = moveEvt.clientY;
+      // Функция передвижения главного маркера
+      const onMainPinMove = (moveEvt) =>{
+        moveEvt.preventDefault();
 
-      if (checkMainPinCoords(newPincoords)) {
-        mainPin.style.left = newPincoords.x + 'px';
-        mainPin.style.top = newPincoords.y + 'px';
+        let newPincoords = {
+          x: this._element.offsetLeft - (startCoords.x - moveEvt.clientX),
+          y: this._element.offsetTop - (startCoords.y - moveEvt.clientY)
+        };
 
-        // Задание адреса в форме объявления при активации страницы
-        window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
+        startCoords.x = moveEvt.clientX;
+        startCoords.y = moveEvt.clientY;
+
+        if (checkMainPinCoords(newPincoords)) {
+          this._element.style.left = newPincoords.x + `px`;
+          this._element.style.top = newPincoords.y + `px`;
+          this.coords.x = newPincoords.x;
+          this.coords.y = newPincoords.x;
+        }
+      }; // --- onMainPinMove(moveEvt) --- end
+
+      // Функция при отпускании мыши на главном маркере
+      const onMainPinMouseUp = (upEvt) =>{
+        upEvt.preventDefault();
+
+        document.removeEventListener(`mousemove`, onMainPinMove);
+        document.removeEventListener(`mouseup`, onMainPinMouseUp);
+      }; // --- onMainPinMouseUp(upEvt) --- end
+
+      if (evt.button === MOUS_LEFT_BUTTON_KEYCODE) {
+        document.addEventListener(`mousemove`, onMainPinMove);
+        document.addEventListener(`mouseup`, onMainPinMouseUp);
       }
-    }
+    }; // --- onMainPinMousedown(evt) --- end
 
-    function onMainPinMouseUp(upEvt) {
-      upEvt.preventDefault();
+    this._element.addEventListener(`mousedown`, onMainPinMousedown);
+  } // --- constructor(mainPinElement) --- end
 
-      // Задание адреса в форме объявления при активации страницы
-      window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
-      document.removeEventListener('mousemove', onMainPinMove);
-      document.removeEventListener('mouseup', onMainPinMouseUp);
-
-    }
-    if (evt.button === 0) {
-      document.addEventListener('mousemove', onMainPinMove);
-      document.addEventListener('mouseup', onMainPinMouseUp);
-    }
+  getElement() {
+    return this._element;
   }
 
-  function reset() {
-    mainPin.style.left = defaultPinCoords.x + 'px';
-    mainPin.style.top = defaultPinCoords.y + 'px';
-
-    mainPin.addEventListener('mousedown', onMainPinFirstMousedown);
-    mainPin.addEventListener('keydown', onMainPinFirstKeydown);
-
-    // Задание адреса в форме объявления при первой загрузке страницы
-    window.adform.setAddressValue((defaultPinCoords.x + Math.floor(MAIN_PIN_WIDTH / 2)), (defaultPinCoords.y + Math.floor(MAIN_PIN_HEIGHT / 2)));
+  getCoords() {
+    return this.coords;
   }
 
-  window.mainpin = {
-    reset: reset
-  };
-})();
+  reset() {
+    this.coords.x = this._defaultPinCoords.x;
+    this.coords.y = this._defaultPinCoords.y;
+    this._element.style.left = this._defaultPinCoords.x + `px`;
+    this._element.style.top = this._defaultPinCoords.y + `px`;
+  }
+}

@@ -5,7 +5,7 @@
   const mainPin = document.querySelector(`.map__pin--main`);
 
   const MAIN_PIN_WIDTH = mainPin.offsetWidth;
-  const MAIN_PIN_HEIGHT = mainPin.offsetHeight;
+  // const MAIN_PIN_HEIGHT = mainPin.offsetHeight;
   const MAIN_PIN_HEIGHT_POINTER = mainPin.offsetHeight + 25;
   const MIN_VERTICAL_POINT = 130;
   const MAX_VERTICAL_POINT = 630;
@@ -21,7 +21,8 @@
 
   const activateMainPin = () => {
     // window.main.activatePage();
-    window.adform.enable();
+
+    // window.adform.enable();
     window.map.enable();
     mainPin.removeEventListener(`mousedown`, onMainPinFirstMousedown);
     mainPin.removeEventListener(`keydown`, onMainPinFirstKeydown);
@@ -80,7 +81,7 @@
         mainPin.style.top = newPincoords.y + `px`;
 
         // Задание адреса в форме объявления при активации страницы
-        window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
+        // window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
       }
     };
 
@@ -88,7 +89,7 @@
       upEvt.preventDefault();
 
       // Задание адреса в форме объявления при активации страницы
-      window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
+      // window.adform.setAddressValue(mainPin.offsetLeft + Math.floor(MAIN_PIN_WIDTH / 2), mainPin.offsetTop + MAIN_PIN_HEIGHT_POINTER);
       document.removeEventListener(`mousemove`, onMainPinMove);
       document.removeEventListener(`mouseup`, onMainPinMouseUp);
 
@@ -107,7 +108,7 @@
     mainPin.addEventListener(`keydown`, onMainPinFirstKeydown);
 
     // Задание адреса в форме объявления при первой загрузке страницы
-    window.adform.setAddressValue((defaultPinCoords.x + Math.floor(MAIN_PIN_WIDTH / 2)), (defaultPinCoords.y + Math.floor(MAIN_PIN_HEIGHT / 2)));
+    // window.adform.setAddressValue((defaultPinCoords.x + Math.floor(MAIN_PIN_WIDTH / 2)), (defaultPinCoords.y + Math.floor(MAIN_PIN_HEIGHT / 2)));
   };
 
   // Обработчики собыитй при первом клике на главный маркер

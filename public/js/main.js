@@ -1,7 +1,7 @@
 (() => {
 
   //
-  window.adform.disable();
+  // window.adform.disable();
   window.map.disable();
 
   // // Функция активации страницы

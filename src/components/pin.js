@@ -1,26 +1,80 @@
-'use strict';
+import {createSomeElement} from "../utils.js";
 
-(function () {
+const PIN_WIDTH = 50;
+const PIN_HEIGHT = 70;
+const PIN_HALF_WIDTH = PIN_WIDTH / 2;
 
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
+const createPinTemplate = (advert) => {
+  // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
+  let pinLeftPossition = advert.location.x - PIN_HALF_WIDTH;
+  let pinTopPosition = advert.location.y - PIN_HEIGHT;
+  let imgUrl = advert.author.avatar;
+  let imgAltText = advert.offer.title;
 
-  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  return (
+    `<button type="button" class="map__pin" style="left: ${pinLeftPossition}px; top: ${pinTopPosition}px;" tabindex="0">
+        <img src="${imgUrl}" width="40" height="40" draggable="false" alt="${imgAltText}">
+      </button>`
+  );
+};
 
-  // Функция создания маркера
-  function createElement(advert) {
-    var pinElement = pinTemplate.cloneNode(true);
-    pinElement.tabIndex = 0;
-    // координаты маркера (x - половина ширины пина), (y - высота пина) чтобы указатель быт острым концом.
-    pinElement.style.left = (advert.location.x - PIN_WIDTH / 2) + 'px';
-    pinElement.style.top = (advert.location.y - PIN_HEIGHT) + 'px';
-    pinElement.querySelector('img').src = advert.author.avatar;
-    pinElement.querySelector('img').alt = advert.offer.title;
-
-    return pinElement;
+export default class Pin {
+  constructor(advert) {
+    this._advert = advert;
+    this._element = null;
+    this._isSelected = false;
   }
 
-  window.pin = {
-    createElement: createElement
-  };
-})();
+  getTemplate() {
+    return createPinTemplate(this._advert);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createSomeElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element.remove();
+    this._element = null;
+  }
+
+  onClick(cb) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      cb();
+      this.select();
+    });
+  }
+  //
+  select() {
+    this._isSelected = true;
+    this._element.classList.add(`map__pin--active`);
+  }
+  //
+  deselect() {
+    this._isSelected = false;
+    this._element.classList.remove(`map__pin--active`);
+  }
+  static deselectAll(pins) {
+    for (let pin of pins) {
+      if (pin._isSelected) {
+        pin.deselect();
+      }
+    }
+  }
+}
+
+
+/*
+
+ --- Метка объявления--
+
+  <button type="button" class="map__pin" style="left: 200px; top: 400px;">
+    <img src="img/avatars/user07.png" width="40" height="40" draggable="false" alt="Метка объявления">
+  </button>
+
+*/

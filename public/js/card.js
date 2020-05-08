@@ -6,8 +6,10 @@
       'palace': `Дворец`,
       'bungalo': `Бунгало`
     };
-
-    return houseType[type];
+    if (type && houseType[type]) {
+      return houseType[type];
+    }
+    return ``;
   };
 
   // Получает шаблон списка особенностей
@@ -37,32 +39,47 @@
       return condition ? `` : `style="display: none;"`;
     };
 
+    const avatar = advert.author.avatar;
+    const title = advert.offer.title;
+    const address = advert.offer.address;
+    const price = advert.offer.price;
+    const flatType = translateOfferType(advert.offer.type);
+    const rooms = advert.offer.rooms;
+    const guests = advert.offer.guests;
+    const timeCheckin = advert.offer.checkin;
+    const timeCheckout = advert.offer.checkout;
+    const features = createFeatureslistTemplate(advert.offer.features);
+    const description = advert.offer.description;
+    const photos = createListPhotoTemplate(advert.offer.photos);
+
     return (
       `<article class="map__card popup hidden">
-        <img src="${advert.author.avatar}" ${hideElement(advert.author.avatar)} class="popup__avatar" width="70" height="70" alt="Аватар пользователя">
+        <img src="${avatar}" ${hideElement(avatar)} class="popup__avatar" width="70" height="70" alt="Аватар пользователя">
         <button type="button" class="popup__close">Закрыть</button>
-        <h3 class="popup__title" ${hideElement(advert.offer.title)}>${advert.offer.title}</h3>
-        <p class="popup__text popup__text--address" ${hideElement(advert.offer.address)}>${advert.offer.address}</p>
-        <p class="popup__text popup__text--price" ${hideElement(advert.offer.price)}>${advert.offer.price}&#x20bd;<span>/ночь</span></p>
-        <h4 class="popup__type" ${hideElement(advert.offer.type)}>${translateOfferType(advert.offer.type)}</h4>
-        <p class="popup__text popup__text--capacity" ${hideElement(advert.offer.rooms && advert.offer.guests)}>${advert.offer.rooms} комнаты для ${advert.offer.guests} гостей</p>
-        <p class="popup__text popup__text--time" ${hideElement(advert.offer.checkin && advert.offer.checkout)}>Заезд после ${advert.offer.checkin}, выезд до ${advert.offer.checkout}</p>
-        <ul class="popup__features" ${hideElement(advert.offer.features.length)}>
-          ${createFeatureslistTemplate(advert.offer.features)}
+        <h3 class="popup__title" ${hideElement(title)}>${title}</h3>
+        <p class="popup__text popup__text--address" ${hideElement(address)}>${address}</p>
+        <p class="popup__text popup__text--price" ${hideElement(price)}>${price}&#x20bd;<span>/ночь</span></p>
+        <h4 class="popup__type" ${hideElement(flatType)}>${flatType}</h4>
+        <p class="popup__text popup__text--capacity" ${hideElement(rooms && guests)}>${rooms} комнаты для ${guests} гостей</p>
+        <p class="popup__text popup__text--time" ${hideElement(timeCheckin && timeCheckout)}>Заезд после ${timeCheckin}, выезд до ${timeCheckout}</p>
+        <ul class="popup__features" ${hideElement(features)}>
+          ${features}
         </ul>
-        <p class="popup__description" ${hideElement(advert.offer.description)}>${advert.offer.description}</p>
-        <div class="popup__photos" ${hideElement(advert.offer.photos.length)}>
-          ${createListPhotoTemplate(advert.offer.photos)}
+        <p class="popup__description" ${hideElement(description)}>${description}</p>
+        <div class="popup__photos" ${hideElement(photos)}>
+          ${photos}
         </div>
       </article>`
     );
   };
+
 
   class Card {
     constructor(advert) {
       this._advert = advert;
       this._element = null;
       this._closeBtn = null;
+      this._isShown = false;
     }
 
     getTemplate() {
@@ -78,6 +95,11 @@
       return this._element;
     }
 
+    removeElement() {
+      this._element = null;
+      this._closeBtn = null;
+    }
+
     getCloseBtn() {
       if (!this._closeBtn) {
 
@@ -85,21 +107,34 @@
       }
       return this._closeBtn;
     }
-    removeElement() {
-      this._element = null;
-      this._closeBtn = null;
-    }
 
+    onCloseBtnClick(cb) {
+      this.getCloseBtn().addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        this.hide();
+        cb();
+      });
+    }
     show() {
+      this._isShown = true;
       this._element.classList.remove(`hidden`);
     }
 
     hide() {
+      this._isShown = false;
       this._element.classList.add(`hidden`);
+    }
+
+    static hideOpened(cards) {
+      for (let card of cards) {
+        if (card._isShown) {
+          card.hide();
+        }
+      }
     }
   }
 
-  window.Card = Card;
+  window.CardComponent = Card;
 })();
 
 /*

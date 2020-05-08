@@ -22,6 +22,7 @@
     constructor(advert) {
       this._advert = advert;
       this._element = null;
+      this._isSelected = false;
     }
 
     getTemplate() {
@@ -39,17 +40,34 @@
     removeElement() {
       this._element = null;
     }
+
+    onClick(cb) {
+      this.getElement().addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        cb();
+        this.select();
+      });
+    }
     //
-    // select(){
+    select() {
+      this._isSelected = true;
+      this._element.classList.add(`map__pin--active`);
+    }
     //
-    // }
-    //
-    // deselect(){
-    //
-    // }
+    deselect() {
+      this._isSelected = false;
+      this._element.classList.remove(`map__pin--active`);
+    }
+    static deselectAll(pins) {
+      for (let pin of pins) {
+        if (pin._isSelected) {
+          pin.deselect();
+        }
+      }
+    }
   }
 
-  window.Pin = Pin;
+  window.PinComponent = Pin;
 })();
 
 /*

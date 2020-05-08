@@ -1,20 +1,31 @@
-// Неактивное состояние странице на загрузке
+import MapComponent from "./components/map.js";
 
+const mapOnPage = document.querySelector(`.map`);
 
-// Функция активации страницы
-const activatePage = () => {
-  window.adform.enable();
-  window.map.enable();
-};
+const map = new MapComponent(mapOnPage);
 
-// Функция деактивации старинцы
-const deactivatePage = () =>{
-  window.adform.disable();
-  window.map.disable();
-};
+map.disable();
 
-deactivatePage();
-window.main = {
-  activatePage,
-  deactivatePage
-};
+// ------ СТАРЫЙ КОД ---------
+//
+// window.adform.disable();
+// window.map.disable();
+
+// // Функция активации страницы
+// const activatePage = () =>{
+//   window.adform.enable();
+//   window.map.enable();
+// };
+// // Функция деактивации старинцы
+// const deactivatePage = () =>{
+//   window.adform.disable();
+//   window.map.disable();
+// };
+//
+// // Неактивное состояние странице на загрузке
+// deactivatePage();
+
+// window.main = {
+//   activatePage,
+//   deactivatePage
+// };

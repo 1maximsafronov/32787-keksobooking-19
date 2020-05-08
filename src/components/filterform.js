@@ -1,49 +1,71 @@
-'use strict';
+import {enableForm, disableForm} from "../utils.js";
+// import {getAdverts} from "../data.js";
 
-(function () {
-  var NUMBER_PINS = 5;
-  var PRICE_HIGH = 50000;
-  var PRICE_LOW = 10000;
-  var ANY_VALUE = 'any';
-  var PriceType = {
-    ANY: 'any',
-    MIDDLE: 'middle',
-    LOW: 'low',
-    HIGH: 'high'
-  };
+const NUMBER_PINS = 5;
+const PRICE_HIGH = 50000;
+const PRICE_LOW = 10000;
+const ANY_VALUE = `any`;
+const PriceType = {
+  ANY: `any`,
+  MIDDLE: `middle`,
+  LOW: `low`,
+  HIGH: `high`
+};
 
-  var filterForm = document.querySelector('.map__filters');
-  var typeFilter = filterForm.querySelector('#housing-type');
-  var priceFilter = filterForm.querySelector('#housing-price');
-  var roomsFilter = filterForm.querySelector('#housing-rooms');
-  var guestsFilter = filterForm.querySelector('#housing-guests');
-  var featuresFilter = filterForm.querySelector('#housing-features');
+const checkByType = (advert, value)=> {
+  return (advert.offer.type === value || value === ANY_VALUE);
+};
 
-  filterForm.addEventListener('change', window.debounce(filterAdverts));
-
-  function filterAdverts() {
-    var adverts = window.data.getAdverts();
-    var filteredAdverts = [];
-    window.map.closeOpenedCard();
-
-    for (var i = 0; i < adverts.length; i++) {
-      if (checkAdvert(adverts[i])) {
-        filteredAdverts.push(adverts[i]);
-      }
-      if (filteredAdverts.length >= NUMBER_PINS) {
-        break;
-      }
-    }
-
-    window.map.renderPins(filteredAdverts);
+const checkByPrice = (advert, priceFilter)=> {
+  let price;
+  if (advert.offer.price < PRICE_LOW) {
+    price = PriceType.LOW;
+  } else if (advert.offer.price > PRICE_HIGH) {
+    price = PriceType.HIGH;
+  } else {
+    price = PriceType.MIDDLE;
   }
 
-  function checkAdvert(advert) {
-    var isTypeConform = checkByType(advert);
-    var isPriceConform = checkByPrice(advert);
-    var isRoomsConform = checkByRooms(advert);
-    var isGuestsConform = checkByGuests(advert);
-    var isFeaturesConform = checkByFeatures(advert);
+  return (priceFilter.value === price || priceFilter.value === PriceType.ANY);
+};
+
+const checkByRooms = (advert, roomsFilter)=> {
+  return (advert.offer.rooms.toString() === roomsFilter.value || roomsFilter.value === ANY_VALUE);
+};
+
+const checkByGuests = (advert, guestsFilter)=> {
+  return (advert.offer.guests.toString() === guestsFilter.value || guestsFilter.value === ANY_VALUE);
+};
+
+const checkByFeatures = (advert, featuresFilter)=> {
+  const featuresCheckbox = featuresFilter.querySelectorAll(`input:checked`);
+
+  for (let i = 0; i < featuresCheckbox.length; i++) {
+    if (!advert.offer.features.includes(featuresCheckbox[i].value)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export default class Filter {
+  constructor(filterForm, map) {
+    this._map = map;
+    this._filterForm = filterForm;
+    this._typeFilter = this._filterForm.querySelector(`#housing-type`);
+    this._priceFilter = this._filterForm.querySelector(`#housing-price`);
+    this._roomsFilter = this._filterForm.querySelector(`#housing-rooms`);
+    this._guestsFilter = filterForm.querySelector(`#housing-guests`);
+    this._featuresFilter = filterForm.querySelector(`#housing-features`);
+  }
+
+  checkAdvert(advert) {
+    let isTypeConform = checkByType(advert, this._typeFilter);
+    let isPriceConform = checkByPrice(advert, this._priceFilter);
+    let isRoomsConform = checkByRooms(advert, this._roomsFilter);
+    let isGuestsConform = checkByGuests(advert, this._guestsFilter);
+    let isFeaturesConform = checkByFeatures(advert, this._featuresFilter);
 
     if (isTypeConform && isPriceConform && isRoomsConform && isGuestsConform && isFeaturesConform) {
       return true;
@@ -51,58 +73,34 @@
     return false;
   }
 
-  function checkByType(advert) {
-    return (advert.offer.type === typeFilter.value || typeFilter.value === ANY_VALUE);
-  }
+  filterAdverts() {
+    let adverts = this._map.getAdverts();
+    let filteredAdverts = [];
 
-  function checkByPrice(advert) {
-    var price;
-    if (advert.offer.price < PRICE_LOW) {
-      price = PriceType.LOW;
-    } else if (advert.offer.price > PRICE_HIGH) {
-      price = PriceType.HIGH;
-    } else {
-      price = PriceType.MIDDLE;
-    }
 
-    return (priceFilter.value === price || priceFilter.value === PriceType.ANY);
-  }
-
-  function checkByRooms(advert) {
-    return (advert.offer.rooms.toString() === roomsFilter.value || roomsFilter.value === ANY_VALUE);
-  }
-
-  function checkByGuests(advert) {
-    return (advert.offer.guests.toString() === guestsFilter.value || guestsFilter.value === ANY_VALUE);
-  }
-
-  function checkByFeatures(advert) {
-    var featuresCheckbox = featuresFilter.querySelectorAll('input:checked');
-
-    for (var i = 0; i < featuresCheckbox.length; i++) {
-      if (!advert.offer.features.includes(featuresCheckbox[i].value)) {
-        return false;
+    for (let i = 0; i < adverts.length; i++) {
+      if (this.checkAdvert(adverts[i])) {
+        filteredAdverts.push(adverts[i]);
+      }
+      if (filteredAdverts.length >= NUMBER_PINS) {
+        break;
       }
     }
 
-    return true;
+    this._map.render(filteredAdverts);
   }
 
-  function reset() {
-    filterForm.reset();
+  enable() {
+    enableForm(this._filterForm);
+    // this._filterForm.addEventListener(`change`, debounce(this.filterAdverts()));
+    this._filterForm.addEventListener(`change`, this.filterAdverts);
   }
 
-  function enable() {
-    window.formsactions.enable(filterForm);
+  disable() {
+    disableForm(this._filterForm);
   }
 
-  function disable() {
-    window.formsactions.disable(filterForm);
+  reset() {
+    this._filterForm.reset();
   }
-
-  window.filterform = {
-    reset: reset,
-    enable: enable,
-    disable: disable
-  };
-})();
+}

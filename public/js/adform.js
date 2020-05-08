@@ -290,11 +290,15 @@
     validateAdType();
   };
 
+
   window.adform = {
     setAddressValue,
     enable,
     disable
   };
+
+  // Временно
+  window.adform.disable();
 })();
 
 
