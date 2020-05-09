@@ -1,6 +1,6 @@
 import PinComponent from "./pin.js";
 import CardComponent from "./card.js";
-import {RenderPosition, render} from "../utils.js";
+import {RenderPosition, render} from "../utils/render.js";
 
 const NUMBER_PINS = 5;
 let pinsCollection = new Set();

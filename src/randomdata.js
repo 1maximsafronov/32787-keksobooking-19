@@ -1,4 +1,3 @@
-
 const offerTypeArr = [`palace`, `flat`, `house`, `bungalo`];
 
 const offerFeaturesArr = [

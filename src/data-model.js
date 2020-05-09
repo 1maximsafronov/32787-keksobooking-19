@@ -1,6 +1,7 @@
+import {RenderPosition, createSomeElement, render} from "./utils/render.js";
 import {load as backendLoad} from "./backend.js";
-import {RenderPosition, createSomeElement, render} from "./utils.js";
 import {generateAdverts} from "./randomdata.js";
+
 const TOTAL_NUMBER_ADVERTS = 8;
 const createEorrorMessageTemplate = (errorMessage) => {
   return (

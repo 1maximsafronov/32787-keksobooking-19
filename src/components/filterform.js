@@ -1,4 +1,4 @@
-import {enableForm, disableForm} from "../utils.js";
+import {enableForm, disableForm} from "../utils/form-actions.js";
 
 const NUMBER_PINS = 5;
 const PRICE_HIGH = 50000;

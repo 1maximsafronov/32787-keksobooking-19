@@ -1,6 +1,7 @@
 import SuccessMessage from "./success-upload-message.js";
 import ErrorMessage from "./error-upload-message.js";
-import {enableForm, disableForm, render, RenderPosition, setInvalidOutline, clearInvalidOutline} from "../utils.js";
+import {render, RenderPosition} from "../utils/render.js";
+import {enableForm, disableForm, setInvalidOutline, clearInvalidOutline} from "../utils/form-actions.js";
 import {upload as backendUpload} from "../backend.js";
 
 

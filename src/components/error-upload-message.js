@@ -1,4 +1,4 @@
-import {createSomeElement} from "../utils.js";
+import {createSomeElement} from "../utils/render.js";
 
 const createTemplate = () => {
   return (

@@ -1,4 +1,4 @@
-import {createSomeElement} from "../utils.js";
+import {createSomeElement} from "../utils/render.js";
 
 const PIN_WIDTH = 50;
 const PIN_HEIGHT = 70;
