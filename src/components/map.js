@@ -1,10 +1,6 @@
 import PinComponent from "./pin.js";
 import CardComponent from "./card.js";
-import MainPinComponent from "./mainpin.js";
 import {RenderPosition, render} from "../utils.js";
-// import {loadData, getAdverts} from "../data.js";
-import FilterComponent from "./filterform.js";
-import AdFormComponent from "./adform.js";
 
 const NUMBER_PINS = 5;
 let pinsCollection = new Set();
@@ -80,39 +76,22 @@ const renderMap = (adverts, pinsContainer, cardsContainer)=> {
 // ----- Класс создания карты---------------------------------
 //
 export default class Map {
-  constructor(mapElement, adverts) {
-    this._element = mapElement;
+  constructor(adverts) {
+    this._element = document.querySelector(`.map`);
     this._adverts = adverts;
     this._pinsContainer = this._element.querySelector(`.map__pins`);
-    this.mainPin = new MainPinComponent(this._element.querySelector(`.map__pin--main`));
     this._cardsContainer = this._element.querySelector(`.map__filters-container`);
 
-    this.filterForm = new FilterComponent(this._element.querySelector(`.map__filters`));
-    this.adForm = new AdFormComponent(document.querySelector(`.ad-form`));
-
-    this.filterForm.setChangeHandler(()=>{
-      this.filterForm.filterAdverts(this._adverts);
-      this.render(this.filterForm.getFilteredAdverts());
-    });
-
-    this.adForm.setResetBtnClickHandler((evt)=>{
-      evt.preventDefault();
-      this.adForm.disable();
-      this.disable();
-    });
-
-    this.adForm.setSubmitHandler((evt)=>{
-      evt.preventDefault();
-      this.adForm.uploadData();
-      this.disable();
-    });
-
-    this.mainPin.setChangeCoordsHandler((x, y) => {
-      this.adForm.setAddressValue(x, y);
-    });
+    this._enableListeners = new Set();
+    this._disableListeners = new Set();
   }
-
+  setElement() {
+    this._element = document.querySelector(`.map`);
+  }
   getElement() {
+    if (!this._element) {
+      this.setElement();
+    }
     return this._element;
   }
 
@@ -120,29 +99,34 @@ export default class Map {
     return this._adverts;
   }
 
+  setEnableHandler(handler) {
+    this._enableListeners.add(handler);
+  }
+
+  notifyEnableListeners() {
+    for (const listener of this._enableListeners) {
+      listener();
+    }
+  }
+  setDisableHandler(handler) {
+    this._disableListeners(handler);
+  }
+
+  notifyDisableListeners() {
+    for (const listener of this._disableListeners) {
+      listener();
+    }
+  }
   enable() {
     this.getElement().classList.remove(`map--faded`);
     this.render(this.getAdverts());
-    this.filterForm.enable();
-    this.adForm.enable();
+    this.notifyEnableListeners();
   }
 
   disable() {
-
     this.getElement().classList.add(`map--faded`);
     this.clear();
-    this.filterForm.disable();
-    this.adForm.disable();
-    this.mainPin.reset();
-    const onMainPinFirstMousedown = (evt) => {
-      if (evt.button === 0) {
-        evt.preventDefault();
-        this.enable();
-        this.mainPin.getElement().removeEventListener(`mousedown`, onMainPinFirstMousedown);
-      }
-    };
-
-    this.mainPin.setFirstMousdownHandler(onMainPinFirstMousedown);
+    this.notifyDisableListeners();
   }
 
   render(adverts) {

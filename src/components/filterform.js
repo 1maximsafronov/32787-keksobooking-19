@@ -88,8 +88,8 @@ const filterAdverts = (adverts, formFilter) => {
 };
 
 export default class Filter {
-  constructor(filterForm) {
-    this._element = filterForm;
+  constructor() {
+    this._element = document.querySelector(`.map__filters`);
   }
 
   getElement() {
@@ -101,6 +101,7 @@ export default class Filter {
   }
 
   disable() {
+    this.reset();
     disableForm(this.getElement());
   }
 

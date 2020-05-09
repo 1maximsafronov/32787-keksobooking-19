@@ -242,8 +242,8 @@ const setFormHandlers = (form) =>{
 };
 
 export default class AdForm {
-  constructor(adFormElement) {
-    this._element = adFormElement;
+  constructor() {
+    this._element = document.querySelector(`.ad-form`);
     this._resetBtn = this._element.querySelector(`.ad-form__reset`);
   }
   getElement() {

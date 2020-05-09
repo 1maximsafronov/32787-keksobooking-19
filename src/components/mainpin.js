@@ -25,8 +25,8 @@ const checkMainPinCoords = (coords) =>{
 
 // ---- Задание класса главного маркера
 export default class MainPin {
-  constructor(mainPinElement) {
-    this._element = mainPinElement;
+  constructor() {
+    this._element = document.querySelector(`.map__pin--main`);
     this._defaultPosition = {
       x: this._element.offsetLeft,
       y: this._element.offsetTop
@@ -38,8 +38,13 @@ export default class MainPin {
     this._mousedownHandlers = new Set();
     this._coordsListeners = new Set();
   }
-
+  setElement() {
+    this._element = document.querySelector(`.map__pin--main`);
+  }
   getElement() {
+    if (!this._element) {
+      this.setElement();
+    }
     return this._element;
   }
 
