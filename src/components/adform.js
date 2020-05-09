@@ -1,30 +1,18 @@
-import {enableForm, disableForm, createSomeElement, setInvalidOutline, clearInvalidOutline} from "../utils.js";
+import SuccessMessage from "./success-upload-message.js";
+import ErrorMessage from "./error-upload-message.js";
+import {enableForm, disableForm, render, RenderPosition, setInvalidOutline, clearInvalidOutline} from "../utils.js";
 import {upload as backendUpload} from "../backend.js";
+
 
 const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
 
-const createSuccessTemplate = () => {
-  return (
-    `<div class="success">
-        <p class="success__message">Ваше объявление<br>успешно размещено!</p>
-      </div>`
-  );
-};
-
-const createErrorTemplate = () => {
-  return (
-    `<div class="error">
-        <p class="error__message">Ошибка загрузки объявления</p>
-        <button class="error__button">Попробовать снова</button>
-      </div>`
-  );
-};
 
 const onFormSuccess = (form) => {
-  const successMessage = createSomeElement(createSuccessTemplate());
+  const successMessage = new SuccessMessage();
 
   const hideSuccessMessage = () => {
-    successMessage.remove();
+    successMessage.getElement().remove();
+    successMessage.removeElement();
     document.removeEventListener(`click`, onSuccessMessageClick);
     document.removeEventListener(`keydown`, onSuccessMessageEscKeydown);
   };
@@ -43,14 +31,14 @@ const onFormSuccess = (form) => {
 
   document.addEventListener(`click`, onSuccessMessageClick);
   document.addEventListener(`keydown`, onSuccessMessageEscKeydown);
-  document.querySelector(`main`).appendChild(successMessage);
+  render(document.querySelector(`main`), successMessage.getElement(), RenderPosition.BEFOREEND);
   form.disable();
 }; // --- onFormSuccess() --- end
 
 // При ошибке отправки формы
 const onFormError = () => {
-  const errorMessage = createSomeElement(createErrorTemplate());
-  const errorButton = errorMessage.querySelector(`.error__button`);
+  const errorMessage = new ErrorMessage();
+  const errorButton = errorMessage.getElement().querySelector(`.error__button`);
 
 
   const onErrorButtonClick = (evtMsg) => {
@@ -64,7 +52,8 @@ const onFormError = () => {
     }
   };
   const hideErrorMessage = () => {
-    errorMessage.remove();
+    errorMessage.getElement().remove();
+    errorMessage.removeElement();
     errorButton.removeEventListener(`click`, onErrorButtonClick);
     document.removeEventListener(`click`, onErrorMessageClick);
     document.removeEventListener(`keydown`, onErrorMessageEscKeydown);
@@ -79,7 +68,7 @@ const onFormError = () => {
   errorButton.addEventListener(`click`, onErrorButtonClick);
   document.addEventListener(`click`, onErrorMessageClick);
   document.addEventListener(`keydown`, onErrorMessageEscKeydown);
-  document.querySelector(`main`).appendChild(errorMessage);
+  render(document.querySelector(`main`), errorMessage.getElement(), RenderPosition.BEFOREEND);
 
 }; // --- onFormError() --- end
 
