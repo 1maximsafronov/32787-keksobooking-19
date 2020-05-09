@@ -104,6 +104,7 @@ export default class Map {
     this.adForm.setSubmitHandler((evt)=>{
       evt.preventDefault();
       this.adForm.uploadData();
+      this.disable();
     });
 
     this.mainPin.setChangeCoordsHandler((x, y) => {

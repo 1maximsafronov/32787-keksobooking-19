@@ -45,7 +45,6 @@ const onFormSuccess = (form) => {
   document.addEventListener(`keydown`, onSuccessMessageEscKeydown);
   document.querySelector(`main`).appendChild(successMessage);
   form.disable();
-  // window.map.disable();
 }; // --- onFormSuccess() --- end
 
 // При ошибке отправки формы
@@ -179,20 +178,21 @@ const setFormHandlers = (form) =>{
     adTimeIn.value = adTimeOut.value;
   });
 
-  // При изменении количества комнат
-  adRoomNumber.addEventListener(`change`, () => {
+  const validateRoomsCapacity = ()=>{
     let rooms = parseInt(adRoomNumber.value, 10);
     let capacity = parseInt(adCapacity.value, 10);
     let errorMessage = getErrorCapacity(rooms, capacity);
     adCapacity.setCustomValidity(errorMessage);
+  };
+  validateRoomsCapacity();
+  // При изменении количества комнат
+  adRoomNumber.addEventListener(`change`, () => {
+    validateRoomsCapacity();
   });
 
   // При изменении элемента вместимости комнат
   adCapacity.addEventListener(`change`, () => {
-    let rooms = parseInt(adRoomNumber.value, 10);
-    let capacity = parseInt(adCapacity.value, 10);
-    let errorMessage = getErrorCapacity(rooms, capacity);
-    adCapacity.setCustomValidity(errorMessage);
+    validateRoomsCapacity();
   });
 
   // При невалидной вместимости комнат
@@ -279,7 +279,7 @@ export default class AdForm {
 
   uploadData() {
     const success = ()=>{
-      onFormSuccess(this.getElement());
+      onFormSuccess(this);
     };
     backendUpload(new FormData(this.getElement()), success, onFormError);
   }
