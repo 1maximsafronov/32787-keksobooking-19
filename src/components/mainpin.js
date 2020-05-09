@@ -5,12 +5,12 @@ const MIN_HORIZON_POINT = 0;
 const MAX_HORIZON_POINT = 1200;
 const MAIN_PIN_WIDTH = 65;
 const MAIN_PIN_HEIGHT = 65;
+const MAIN_PIN_HALF_WIDTH = Math.floor(MAIN_PIN_WIDTH / 2);
 const MAIN_PIN_HEIGHT_POINTER = MAIN_PIN_HEIGHT + 25;
-
 // Проерка координат главного маркера на выход за пределы карты
 const checkMainPinCoords = (coords) =>{
   let yCoord = coords.y + MAIN_PIN_HEIGHT_POINTER;
-  let xCoord = coords.x + MAIN_PIN_WIDTH / 2;
+  let xCoord = coords.x + MAIN_PIN_HALF_WIDTH;
 
   let isYCoordMatch = (
     yCoord <= MAX_VERTICAL_POINT && yCoord >= MIN_VERTICAL_POINT
@@ -22,18 +22,21 @@ const checkMainPinCoords = (coords) =>{
   return (isYCoordMatch && isXCoordMatch);
 }; // --- checkMainPinCoords(coords) --- end
 
+
 // ---- Задание класса главного маркера
 export default class MainPin {
   constructor(mainPinElement) {
     this._element = mainPinElement;
-    this._defaultPinCoords = {
+    this._defaultPosition = {
       x: this._element.offsetLeft,
       y: this._element.offsetTop
     };
     this.coords = {
-      x: this._defaultPinCoords.x,
-      y: this._defaultPinCoords.y
+      x: this._defaultPosition.x,
+      y: this._defaultPosition.y
     };
+    this._mousedownHandlers = new Set();
+    this._coordsListeners = new Set();
   }
 
   getElement() {
@@ -43,19 +46,24 @@ export default class MainPin {
   getCoords() {
     return this.coords;
   }
+  removeElement() {
+    this._element = null;
+  }
 
   reset() {
     this.coords = {
-      x: this._defaultPinCoords.x,
-      y: this._defaultPinCoords.y
+      x: this._defaultPosition.x,
+      y: this._defaultPosition.y
     };
-    this.getElement().style.left = this.coords.x + `px`;
-    this.getElement().style.top = this.coords.y + `px`;
+    this.notifyCoordListeners();
+    this._element.style.left = this._defaultPosition.x + `px`;
+    this._element.style.top = this._defaultPosition.y + `px`;
+    this.removeMousedownHandler();
   }
 
   setFirstMousdownHandler(handler) {
-    this.getElement().addEventListener(`mousedown`, handler);
-    const onMainPinMousedown = (evt) =>{
+
+    const onMouseDown = (evt)=> {
       evt.preventDefault();
 
       let startCoords = {
@@ -64,16 +72,17 @@ export default class MainPin {
       };
 
       // Функция передвижения главного маркера
-      const onMainPinMove = (moveEvt) =>{
+      const onMouseMove = (moveEvt) =>{
         moveEvt.preventDefault();
+
         let newPincoords = {
           x: this.getElement().offsetLeft - (startCoords.x - moveEvt.clientX),
           y: this.getElement().offsetTop - (startCoords.y - moveEvt.clientY)
         };
-        startCoords = {
-          x: moveEvt.clientX,
-          y: moveEvt.clientY
-        };
+
+        startCoords.x = moveEvt.clientX;
+        startCoords.y = moveEvt.clientY;
+
         if (checkMainPinCoords(newPincoords)) {
           this.getElement().style.left = newPincoords.x + `px`;
           this.getElement().style.top = newPincoords.y + `px`;
@@ -81,30 +90,47 @@ export default class MainPin {
             x: newPincoords.x,
             y: newPincoords.y
           };
+          this.notifyCoordListeners();
         }
-      }; // --- onMainPinMove(moveEvt) --- end
+      }; // --- onMouseMove(moveEvt) --- end
 
       // Функция при отпускании мыши на главном маркере
       const onMouseUp = (upEvt) =>{
         upEvt.preventDefault();
-        document.removeEventListener(`mousemove`, onMainPinMove);
+        document.removeEventListener(`mousemove`, onMouseMove);
         document.removeEventListener(`mouseup`, onMouseUp);
       }; // --- onMainPinMouseUp(upEvt) --- end
 
       if (evt.button === MOUS_LEFT_BUTTON_KEYCODE) {
-        document.addEventListener(`mousemove`, onMainPinMove);
+        document.addEventListener(`mousemove`, onMouseMove);
         document.addEventListener(`mouseup`, onMouseUp);
       }
-    }; // --- onMainPinMousedown(evt) --- end
+    };// --- this.onMouseDown(evt) --- end
 
-    this.setMousdownHandler(onMainPinMousedown);
+    this.getElement().addEventListener(`mousedown`, handler);
+    this.setMousdownHandler(onMouseDown);
   }
 
   setMousdownHandler(handler) {
     this.getElement().addEventListener(`mousedown`, handler);
+    this._mousedownHandlers.add(handler);
   }
 
-  removeElement() {
-    this._element = null;
+  removeMousedownHandler() {
+    for (const handler of this._mousedownHandlers) {
+      this.getElement().removeEventListener(`mousedown`, handler);
+      this._mousedownHandlers.delete(handler);
+    }
   }
+
+  notifyCoordListeners() {
+    for (const listener of this._coordsListeners) {
+      listener(this.coords.x + MAIN_PIN_HALF_WIDTH, this.coords.y + MAIN_PIN_HEIGHT_POINTER);
+    }
+  }
+
+  setChangeCoordsHandler(handler) {
+    this._coordsListeners.add(handler);
+  }
+
 }

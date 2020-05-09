@@ -7,16 +7,18 @@ import FilterComponent from "./filterform.js";
 import AdFormComponent from "./adform.js";
 
 const NUMBER_PINS = 5;
-let pinsCollection = [];
-let cardsCollection = [];
+let pinsCollection = new Set();
+let cardsCollection = new Set();
 
 const renderPinAndCard = (advert, pinsFragment, cardsFragment) => {
   const pin = new PinComponent(advert);
   const card = new CardComponent(advert);
 
   const onEscKeydown = (evt) => {
-    evt.preventDefault();
-    hideCard();
+    if (evt.key === `Escape`) {
+      evt.preventDefault();
+      hideCard();
+    }
   };
 
   const hideCard = ()=> {
@@ -28,11 +30,11 @@ const renderPinAndCard = (advert, pinsFragment, cardsFragment) => {
   const showCard = () => {
     PinComponent.removeSelectedPin();
     CardComponent.hideOpenedCard();
+    CardComponent.saveOpenedCard(card);
+    PinComponent.saveSelectedPin(pin);
     pin.select();
     card.show();
     document.addEventListener(`keydown`, onEscKeydown);
-    CardComponent.saveOpenedCard(card);
-    PinComponent.saveSelectedPin(pin);
   };
 
   pin.setClickHandler((evt) => {
@@ -50,8 +52,8 @@ const renderPinAndCard = (advert, pinsFragment, cardsFragment) => {
   // Отрисовка одной карточки объявления и добавление её в хранилище
   render(cardsFragment, card.getElement(), RenderPosition.BEFOREEND);
 
-  pinsCollection.push(pin);
-  cardsCollection.push(card);
+  pinsCollection.add(pin);
+  cardsCollection.add(card);
 };
 
 const renderMap = (adverts, pinsContainer, cardsContainer)=> {
@@ -66,7 +68,7 @@ const renderMap = (adverts, pinsContainer, cardsContainer)=> {
   adverts.forEach((advert) => {
     if (advert.offer) {
       renderPinAndCard(advert, pinsFragment, cardsFragment);
-    } // --- if (advert.offer) --- end
+    }
   }); // --- adverts.foreEach() --- end
 
   // Отрисовка всех маркеров объявлений в контейнер
@@ -83,22 +85,30 @@ export default class Map {
     this._adverts = adverts;
     this._pinsContainer = this._element.querySelector(`.map__pins`);
     this.mainPin = new MainPinComponent(this._element.querySelector(`.map__pin--main`));
+    this._cardsContainer = this._element.querySelector(`.map__filters-container`);
+
     this.filterForm = new FilterComponent(this._element.querySelector(`.map__filters`));
     this.adForm = new AdFormComponent(document.querySelector(`.ad-form`));
+
     this.filterForm.setChangeHandler(()=>{
       this.filterForm.filterAdverts(this._adverts);
       this.render(this.filterForm.getFilteredAdverts());
     });
+
     this.adForm.setResetBtnClickHandler((evt)=>{
       evt.preventDefault();
       this.adForm.disable();
       this.disable();
     });
+
     this.adForm.setSubmitHandler((evt)=>{
       evt.preventDefault();
       this.adForm.uploadData();
     });
 
+    this.mainPin.setChangeCoordsHandler((x, y) => {
+      this.adForm.setAddressValue(x, y);
+    });
   }
 
   getElement() {
@@ -117,10 +127,12 @@ export default class Map {
   }
 
   disable() {
-    this.clear();
+
     this.getElement().classList.add(`map--faded`);
+    this.clear();
     this.filterForm.disable();
     this.adForm.disable();
+    this.mainPin.reset();
     const onMainPinFirstMousedown = (evt) => {
       if (evt.button === 0) {
         evt.preventDefault();
@@ -134,20 +146,19 @@ export default class Map {
 
   render(adverts) {
     this.clear();
-    renderMap(adverts, this._pinsContainer, this._element.querySelector(`.map__filters-container`));
+    renderMap(adverts, this._pinsContainer, this._cardsContainer);
   } // --- render(adverts) --- end
 
   clear() {
-    pinsCollection.forEach((pin) => {
+    for (const pin of pinsCollection) {
       pin.getElement().remove();
       pin.removeElement();
-    });
-    cardsCollection.forEach((card) => {
+      pinsCollection.delete(pin);
+    }
+    for (const card of cardsCollection) {
       card.getElement().remove();
       card.removeElement();
-    });
-    pinsCollection = [];
-    cardsCollection = [];
-
+      cardsCollection.delete(card);
+    }
   }
 } // --- class Map --- end

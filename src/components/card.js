@@ -1,6 +1,7 @@
 import {createSomeElement} from "../utils.js";
 
 let openedCard = null;
+
 const translateOfferType = (type) => {
   let houseType = {
     'house': `Дом`,
