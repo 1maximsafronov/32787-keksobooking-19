@@ -108,7 +108,7 @@ export default class Filter {
     this.getElement().reset();
   }
 
-  setSubmitHandler(handler) {
+  setChangeHandler(handler) {
     this.getElement().addEventListener(`change`, handler);
   }
 

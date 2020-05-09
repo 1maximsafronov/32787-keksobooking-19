@@ -68,3 +68,12 @@ export const render = (container, element, place) => {
       break;
   }
 };
+// Функция выделения невалидных полей
+export const setInvalidOutline = (target) => {
+  target.style.outline = `2px solid red`;
+};
+
+// функция оцистки выделения невалидных полей
+export const clearInvalidOutline = (target) => {
+  target.style.outline = `none`;
+};

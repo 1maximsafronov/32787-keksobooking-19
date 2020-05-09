@@ -103,4 +103,8 @@ export default class MainPin {
   setMousdownHandler(handler) {
     this.getElement().addEventListener(`mousedown`, handler);
   }
+
+  removeElement() {
+    this._element = null;
+  }
 }
